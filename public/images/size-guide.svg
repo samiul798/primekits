@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#f8fafc"/>
+  <text x="400" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#0f172a">How to Measure Your Garment</text>
+  <path d="M335 130 L400 95 L465 130 L510 205 L475 225 L460 395 L340 395 L325 225 L290 205 Z" fill="#e2e8f0" stroke="#334155" stroke-width="5"/>
+  <path d="M325 225 L245 340 M475 225 L555 340" stroke="#334155" stroke-width="5"/>
+  <path d="M315 255 H485 M400 110 V405 M330 400 H470" stroke="#f59e0b" stroke-width="5" stroke-dasharray="10 7"/>
+  <text x="500" y="260" font-family="Arial, sans-serif" font-size="22" fill="#92400e">Chest</text>
+  <text x="415" y="155" font-family="Arial, sans-serif" font-size="22" fill="#92400e">Length</text>
+  <text x="480" y="430" font-family="Arial, sans-serif" font-size="22" fill="#92400e">Shoulder</text>
+  <text x="400" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#475569">Compare these measurements with the size chart below.</text>
+</svg>

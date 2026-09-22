@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hind Siliguri", sans-serif;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.min-h-10 {
+  min-height: 2.5rem;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+input, select, textarea {
+  font-size: 16px;
+}
+
+@media print {
+  header, aside, button, a[href], .no-print { display: none !important; }
+  body, main { background: white !important; }
+  main { width: 100% !important; }
+  .rounded-2xl, .rounded-3xl { border-radius: 0 !important; }
+}
+@media (min-width: 768px) {
+  input, select, textarea {
+    font-size: 14px;
+  }
+}
+
+/* Product detail reference layout: compact information panel beside a large
+   framed image, followed by clear outlined detail cards. */
+.product-shell {
+  max-width: 1120px;
+}
+
+.product-media {
+  border-color: #0f172a;
+  background: #f8fafc;
+}
+
+/* Keep the existing product-media frame, but give artwork breathing room so
+   square logos and close-up product photos do not feel oversized. */
+.product-media > img {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.product-info {
+  min-width: 0;
+}
+
+.product-title {
+  color: #07122d;
+  letter-spacing: -0.02em;
+}
+
+.product-choices {
+  border-color: #14213d;
+}
+
+.product-actions button {
+  min-height: 46px;
+}
+
+.product-assurance {
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.product-details > div,
+.product-reviews {
+  border-color: #14213d !important;
+  box-shadow: 0 1px 0 rgb(15 23 42 / 8%);
+}
+
+.product-reviews input,
+.product-reviews select,
+.product-reviews textarea {
+  border-color: #14213d;
+}
+
+.size-chart-modal {
+  border: 1px solid #14213d;
+  box-shadow: 0 24px 70px rgb(2 6 23 / 45%);
+}
+
+.size-chart-body > div:first-child {
+  border-color: #14213d;
+}
+
+@media (min-width: 700px) {
+  .product-top {
+    grid-template-columns: minmax(0, 1.05fr) minmax(310px, .95fr);
+    align-items: start;
+  }
+
+  .product-info {
+    padding-top: 2px;
+  }
+
+  .product-details {
+    grid-template-columns: minmax(0, 2fr) minmax(230px, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 699px) {
+  .product-shell {
+    padding-inline: 12px;
+  }
+
+  .product-gallery .product-media {
+    max-height: 510px;
+  }
+
+  .product-details {
+    margin-top: 28px;
+    gap: 14px;
+  }
+
+  .product-reviews {
+    margin-top: 20px;
+  }
+}
