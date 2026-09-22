@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-guard";
 
@@ -31,9 +32,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Only JPEG, PNG, GIF, and WebP images are allowed" }, { status: 400 });
     }
 
+    const filename = `${Date.now()}-${randomUUID()}.${detected.extension}`;
+
+    // Vercel functions have a read-only, ephemeral filesystem. Persist assets
+    // in Blob storage in production, but retain the convenient local workflow.
+    if (process.env.NODE_ENV === "production") {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        return NextResponse.json(
+          { error: "Image storage is not configured. Connect a Vercel Blob store and redeploy." },
+          { status: 503 }
+        );
+      }
+      const blob = await put(`uploads/${filename}`, file, {
+        access: "public",
+        contentType: detected.mime,
+      });
+      return NextResponse.json({ url: blob.url, mime: detected.mime, size: file.size }, { status: 201 });
+    }
+
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadDir, { recursive: true });
-    const filename = `${Date.now()}-${randomUUID()}.${detected.extension}`;
     await writeFile(path.join(uploadDir, filename), bytes);
     return NextResponse.json({ url: `/uploads/${filename}`, mime: detected.mime, size: file.size }, { status: 201 });
   } catch (error) {
