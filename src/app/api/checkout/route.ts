@@ -15,6 +15,7 @@ import { checkoutSchema } from "@/lib/validations";
 import { generateOrderNumber, normalizeBDPhone } from "@/lib/utils";
 import { getSettings } from "@/lib/settings";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
+import { sendOrderConfirmationTemplate } from "@/lib/whatsapp-cloud";
 
 // simple in-memory rate limit
 const hits = new Map<string, { count: number; ts: number }>();
@@ -379,6 +380,27 @@ export async function POST(req: NextRequest) {
     });
     const waUrl = buildWhatsAppUrl(shopWhatsapp, message);
 
+    // Template delivery is deliberately non-blocking for checkout. A temporary
+    // Meta outage must not discard a valid order or its stock reservation.
+    let whatsappAutomation = "not_configured";
+    try {
+      const sent = await sendOrderConfirmationTemplate({
+        customerName: data.customerName,
+        mobile: whatsappNum,
+        orderNumber,
+        grandTotal,
+      });
+      if (sent.sent) {
+        whatsappAutomation = "template_sent";
+        await db.update(orders)
+          .set({ whatsappStatus: "confirmation_sent", updatedAt: new Date() })
+          .where(eq(orders.id, order.id));
+      }
+    } catch (error) {
+      whatsappAutomation = "template_failed";
+      console.error("WhatsApp confirmation template failed", error);
+    }
+
     return NextResponse.json({
       orderNumber,
       orderId: order.id,
@@ -388,6 +410,7 @@ export async function POST(req: NextRequest) {
       discount,
       whatsappUrl: waUrl,
       message,
+      whatsappAutomation,
     });
   } catch (e: unknown) {
     console.error("checkout error", e);
