@@ -26,20 +26,29 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const p = schema.safeParse(body);
   if (!p.success) return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
-  const rows = await db.select().from(adminUsers).where(eq(adminUsers.email, p.data.email.toLowerCase())).limit(1);
-  const u = rows[0];
-  if (!u || !u.isActive) return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-  const ok = await verifyPassword(p.data.password, u.passwordHash);
-  if (!ok) return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-  attempts.delete(ip);
-  const token = await signAdminToken({ id: u.id, email: u.email, role: u.role || "admin", name: u.name });
-  const res = NextResponse.json({ ok: true, user: { name: u.name, email: u.email, role: u.role } });
-  res.cookies.set(ADMIN_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 7 * 24 * 3600,
-  });
-  return res;
+  try {
+    const rows = await db.select().from(adminUsers).where(eq(adminUsers.email, p.data.email.toLowerCase())).limit(1);
+    const u = rows[0];
+    if (!u || !u.isActive) return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+    const ok = await verifyPassword(p.data.password, u.passwordHash);
+    if (!ok) return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+    const token = await signAdminToken({ id: u.id, email: u.email, role: u.role || "admin", name: u.name });
+    const res = NextResponse.json({ ok: true, user: { name: u.name, email: u.email, role: u.role } });
+    res.cookies.set(ADMIN_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 3600,
+    });
+    attempts.delete(ip);
+    return res;
+  } catch (error) {
+    // Keep the browser response JSON while retaining the diagnostic in Vercel logs.
+    console.error("Admin login failed", error);
+    return NextResponse.json(
+      { error: "Sign-in service is unavailable. Please contact the site administrator." },
+      { status: 503 }
+    );
+  }
 }

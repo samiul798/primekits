@@ -20,8 +20,10 @@ export default function AdminLoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || "Login failed");
+      // A platform-level 5xx response may have an empty or HTML body. Do not
+      // mask the useful login error with a JSON parsing exception.
+      const d = await r.json().catch(() => null) as { error?: string } | null;
+      if (!r.ok) throw new Error(d?.error || "Login failed");
       router.push("/admin");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed");
