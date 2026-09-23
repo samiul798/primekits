@@ -7,13 +7,20 @@ type Review = { id: string; customerName: string; rating: number; comment?: stri
 export default function ReviewsPage() {
   const [items, setItems] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const load = async () => {
     setLoading(true);
+    setError("");
     try {
       const r = await fetch("/api/admin/reviews", { cache: "no-store" });
       const d = await r.json();
-      if (!r.ok) throw new Error(d.error || "Could not load reviews");
+      if (!r.ok) {
+        setError(d.error || "Could not load reviews");
+        return;
+      }
       setItems(d.reviews || []);
+    } catch {
+      setError("Could not load reviews");
     } finally { setLoading(false); }
   };
   useEffect(() => { void load(); }, []);

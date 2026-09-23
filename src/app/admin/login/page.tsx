@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -9,9 +9,12 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const isSubmitting = useRef(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError("");
     setLoading(true);
     try {
@@ -28,6 +31,7 @@ export default function AdminLoginPage() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
+      isSubmitting.current = false;
       setLoading(false);
     }
   }
