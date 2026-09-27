@@ -7,6 +7,7 @@ import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
 import { useCart } from "@/components/CartProvider";
 import { getSizeChart, DEFAULT_SIZE_GUIDE_IMAGE } from "@/lib/size-charts";
 import { SafeImage } from "@/components/safe-image";
+import { sortProductSizes } from "@/lib/utils";
 
 type Variant = {
   id: string;
@@ -155,7 +156,6 @@ export default function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [zoom, setZoom] = useState(false);
   const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
   const [qty, setQty] = useState(1);
   const [msg, setMsg] = useState("");
   const [revName, setRevName] = useState("");
@@ -209,11 +209,9 @@ export default function ProductPage() {
   }
 
   const images = (product.images?.length ? product.images : product.thumbnail ? [product.thumbnail] : []) as string[];
-  const sizes = [...new Set(variants.map((v) => v.size).filter(Boolean))] as string[];
-  const colors = [...new Set(variants.map((v) => v.color).filter(Boolean))] as string[];
+  const sizes = sortProductSizes(variants.map((v) => v.size));
   const hasVariants = variants.length > 0;
-  const selected = hasVariants ? variants.find((v) => (!size || v.size === size) && (!color || v.color === color) && (sizes.length <= 1 || size) && (colors.length <= 1 || color)) : null;
-  const exactSelected = hasVariants ? variants.find((v) => (sizes.length === 0 || v.size === size) && (colors.length === 0 || v.color === color)) : null;
+  const exactSelected = hasVariants ? variants.find((v) => sizes.length === 0 || v.size === size) : null;
   const activeVariant = exactSelected || null;
   const unitPrice = activeVariant
     ? activeVariant.discountPrice && activeVariant.discountPrice > 0 ? activeVariant.discountPrice : activeVariant.sellingPrice
@@ -226,7 +224,6 @@ export default function ProductPage() {
     setMsg("");
     if (hasVariants) {
       if (sizes.length > 0 && !size) return setMsg("Please select a size.");
-      if (colors.length > 0 && !color) return setMsg("Please select a color.");
       if (!activeVariant) return setMsg("This combination is unavailable. Please choose another.");
       if (avail <= 0) return setMsg("This variation is out of stock.");
     }
@@ -239,7 +236,7 @@ export default function ProductPage() {
       slug: product!.slug,
       image: activeVariant?.image || images[0] || null,
       sku: activeVariant?.sku || product!.sku,
-      variationLabel: activeVariant?.label || ([size, color].filter(Boolean).join(" / ") || null),
+       variationLabel: activeVariant?.label || (size || null),
       unitPrice,
       maxStock: hasVariants ? Math.max(0, avail) : 99,
       quantity: qty,
@@ -277,12 +274,12 @@ export default function ProductPage() {
         <div className="product-top mt-4 grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:gap-8">
           <div className="product-gallery">
             <div
-              className="product-media relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-100 shadow-sm"
+              className="product-media group relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-100 shadow-sm"
               onClick={() => setZoom((z) => !z)}
             >
               {images[imgIdx] ? (
                  
-                <SafeImage src={images[imgIdx]} alt={product.name} className={`h-full w-full bg-slate-100 object-contain object-center transition ${zoom ? "scale-150" : ""}`} fallback="👕" />
+                <SafeImage src={images[imgIdx]} alt={product.name} className={`h-full w-full bg-slate-100 object-contain object-center transition duration-300 ease-out md:group-hover:scale-150 ${zoom ? "scale-150" : ""}`} fallback="👕" />
               ) : (
                 <div className="flex h-full items-center justify-center text-6xl">👕</div>
               )}
@@ -335,7 +332,7 @@ export default function ProductPage() {
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {sizes.map((s) => {
                     const sizeAvail = variants
-                      .filter((v) => v.size === s && (!color || v.color === color))
+                       .filter((v) => v.size === s)
                       .reduce((sum, v) => sum + Math.max(0, v.available), 0);
                     const soldOut = sizeAvail <= 0;
                     const isSel = size === s;
@@ -379,16 +376,6 @@ export default function ProductPage() {
                 ) : (
                   <p className="mt-1 text-[11px] text-slate-400">নিজের গায়ের মাপের সাথে মিলিয়ে সাইজ বেছে নিন — চার্টে ছবিসহ মাপ দেওয়া আছে।</p>
                 )}
-              </div>
-            ) : null}
-            {colors.length > 0 ? (
-              <div className="mt-4">
-                <div className="text-sm font-bold">Color: {color || <span className="text-rose-600">Select color</span>}</div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {colors.map((c) => (
-                    <button key={c} onClick={() => setColor(c)} className={`rounded-full border px-4 py-2 text-sm font-bold ${color === c ? "border-slate-900 bg-slate-900 text-white" : "bg-white"}`}>{c}</button>
-                  ))}
-                </div>
               </div>
             ) : null}
 

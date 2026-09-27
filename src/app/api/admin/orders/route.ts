@@ -37,7 +37,7 @@ const manualOrderSchema = z.object({
   address: z.string().min(5).max(500),
   district: z.string().max(80).optional().nullable(),
   thana: z.string().max(80).optional().nullable(),
-  paymentMethod: z.enum(["cod", "bkash", "nagad", "bank", "cash", "advance", "partial"]).default("cod"),
+  paymentMethod: z.enum(["cod", "bkash", "nagad"]).default("cod"),
   paymentStatus: z.enum(["unpaid", "pending", "paid", "partial"]).default("unpaid"),
   deliveryCharge: z.number().min(0).max(100000).default(0),
   discount: z.number().min(0).max(100000).default(0),
@@ -133,7 +133,9 @@ export async function POST(req: NextRequest) {
     if (!(await db.select({ id: orders.id }).from(orders).where(eq(orders.orderNumber, orderNumber)).limit(1)).length) break;
     orderNumber = generateOrderNumber();
   }
-  const inserted = await db.insert(orders).values({ orderNumber, customerId, customerName: data.customerName, mobile, address: data.address, district: data.district || null, thana: data.thana || null, notes: data.notes || null, paymentMethod: data.paymentMethod, paymentStatus: data.paymentStatus, subtotal: subtotal.toFixed(2), deliveryCharge: data.deliveryCharge.toFixed(2), discount: data.discount.toFixed(2), grandTotal: grandTotal.toFixed(2), status: "confirmed", whatsappStatus: "contacted", reservedUntil: new Date(Date.now() + 24 * 60 * 60 * 1000) }).returning();
+  const paid = data.paymentStatus === "paid" ? grandTotal : 0;
+  const due = Math.max(0, grandTotal - paid);
+  const inserted = await db.insert(orders).values({ orderNumber, customerId, customerName: data.customerName, mobile, address: data.address, district: data.district || null, thana: data.thana || null, notes: data.notes || null, paymentMethod: data.paymentMethod, paymentStatus: data.paymentStatus, paymentProvider: data.paymentMethod === "cod" ? null : data.paymentMethod, paymentPaidAmount: paid.toFixed(2), paymentDueAmount: due.toFixed(2), codAmount: due.toFixed(2), refundAmount: "0.00", subtotal: subtotal.toFixed(2), deliveryCharge: data.deliveryCharge.toFixed(2), discount: data.discount.toFixed(2), grandTotal: grandTotal.toFixed(2), status: "confirmed", whatsappStatus: "contacted", reservedUntil: new Date(Date.now() + 24 * 60 * 60 * 1000) }).returning();
   const order = inserted[0];
   const reservedLines: { variant: typeof productVariants.$inferSelect; quantity: number }[] = [];
   for (const line of lines) {
@@ -220,7 +222,13 @@ export async function PUT(req: NextRequest) {
     if (TERMINAL_RELEASE.has(order.status)) {
       return NextResponse.json({ error: `A ${order.status} order cannot be marked delivered by courier.` }, { status: 400 });
     }
-    if (order.paymentMethod === "cod") patch.paymentStatus = "paid";
+    if (order.paymentMethod === "cod") {
+      patch.paymentStatus = "paid";
+      patch.paymentPaidAmount = String(order.grandTotal);
+      patch.paymentDueAmount = "0.00";
+      patch.codAmount = "0.00";
+      patch.paymentTimestamp = new Date();
+    }
     patch.courierDeliveredAt = new Date();
   }
 

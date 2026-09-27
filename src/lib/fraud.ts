@@ -144,7 +144,7 @@ export function calcRisk(
   };
 }
 
-export function courierWiseReport(orders: FraudOrder[]): CourierRow[] {
+export function courierWiseReport(orders: FraudOrder[], thresholds: { low: number; medium: number; rejectHigh: number }): CourierRow[] {
   const map = new Map<string, FraudOrder[]>();
   for (const o of orders) {
     const key = o.courierName || "No Courier / Pending";
@@ -153,7 +153,7 @@ export function courierWiseReport(orders: FraudOrder[]): CourierRow[] {
   }
   const rows: CourierRow[] = [];
   for (const [courierName, list] of map) {
-    const r = calcRisk(list, { low: 80, medium: 50, rejectHigh: 40 });
+    const r = calcRisk(list, thresholds);
     const eligible = r.delivered + r.rejected + r.returned;
     rows.push({
       courierName,

@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
   });
 
   const summary = calcRisk(fraudOrders, thresholds);
-  const courierRows = courierWiseReport(fraudOrders);
+  const courierRows = courierWiseReport(fraudOrders, thresholds);
 
   const first = rows[rows.length - 1];
   const last = rows[0];

@@ -16,6 +16,7 @@ import { generateOrderNumber, normalizeBDPhone } from "@/lib/utils";
 import { getSettings } from "@/lib/settings";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "@/lib/whatsapp";
 import { sendOrderConfirmationTemplate } from "@/lib/whatsapp-cloud";
+import { isPaymentEnabled } from "@/lib/payments";
 
 // simple in-memory rate limit
 const hits = new Map<string, { count: number; ts: number }>();
@@ -39,6 +40,12 @@ export async function POST(req: NextRequest) {
       );
     }
     const data = parsed.data;
+    if (data.paymentMethod === "bkash" && !isPaymentEnabled("bkash")) {
+      return NextResponse.json({ error: "bKash online payment is not configured. Please choose Cash on Delivery or contact the shop." }, { status: 503 });
+    }
+    if (data.paymentMethod === "nagad") {
+      return NextResponse.json({ error: "Nagad online payment is not available until the merchant PGW integration is configured. Please choose Cash on Delivery or contact the shop." }, { status: 503 });
+    }
     const mobile = normalizeBDPhone(data.mobile);
     const whatsappNum = data.whatsapp ? normalizeBDPhone(data.whatsapp) : mobile;
     // A crafted request can repeat the same variant. Combine those lines before
@@ -104,7 +111,7 @@ export async function POST(req: NextRequest) {
       }
       const pVars = varsByProduct.get(p.id) ?? [];
       if (pVars.filter((v) => v.isActive).length > 0 && !it.variantId) {
-        return NextResponse.json({ error: `Please select size/color for "${p.name}"` }, { status: 400 });
+        return NextResponse.json({ error: `Please select a size for "${p.name}"` }, { status: 400 });
       }
       if (it.quantity < 1 || it.quantity > 50) {
         return NextResponse.json({ error: `Invalid quantity for "${p.name}"` }, { status: 400 });
@@ -281,6 +288,11 @@ export async function POST(req: NextRequest) {
         status: "pending_whatsapp",
         whatsappStatus: "link_generated",
         paymentStatus: data.paymentMethod === "cod" ? "unpaid" : "pending",
+        paymentProvider: data.paymentMethod === "cod" ? null : data.paymentMethod,
+        paymentPaidAmount: "0.00",
+        paymentDueAmount: grandTotal.toFixed(2),
+        codAmount: grandTotal.toFixed(2),
+        refundAmount: "0.00",
         reservedUntil,
         ipAddress: ip,
         userAgent: req.headers.get("user-agent") || null,
@@ -376,6 +388,10 @@ export async function POST(req: NextRequest) {
       discount,
       grandTotal,
       paymentMethod: data.paymentMethod,
+      paymentStatus: data.paymentMethod === "cod" ? "unpaid" : "pending",
+      paidAmount: 0,
+      dueAmount: grandTotal,
+      codAmount: grandTotal,
       notes: data.notes,
     });
     const waUrl = buildWhatsAppUrl(shopWhatsapp, message);
@@ -411,6 +427,9 @@ export async function POST(req: NextRequest) {
       whatsappUrl: waUrl,
       message,
       whatsappAutomation,
+      paymentMethod: data.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      paymentStartUrl: data.paymentMethod === "bkash" ? "/api/payments/bkash/start" : null,
     });
   } catch (e: unknown) {
     console.error("checkout error", e);

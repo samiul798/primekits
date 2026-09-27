@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SiteHeader, SiteFooter } from "@/components/store";
 import { useCart } from "@/components/CartProvider";
-import { DIVISIONS } from "@/lib/utils";
+import { DIVISIONS, PAYMENT_METHODS } from "@/lib/utils";
 import { SafeImage } from "@/components/safe-image";
 
 export default function CheckoutPage() {
@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const [settings, setSettings] = useState<Record<string, number | string>>({ businessName: "PrimeKits Studio", deliveryInsideDhaka: 60, deliveryOutsideDhaka: 130, deliverySubDhaka: 100 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [onlinePayments, setOnlinePayments] = useState({ bkash: false, nagad: false });
   const [form, setForm] = useState({
     customerName: "",
     mobile: "",
@@ -30,6 +31,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetch("/api/settings").then((r) => r.json()).then((d) => d.settings && setSettings(d.settings)).catch(() => {});
+    fetch("/api/payments/status")
+      .then((r) => r.json())
+      .then((d) => setOnlinePayments({ bkash: Boolean(d.providers?.bkash?.enabled), nagad: Boolean(d.providers?.nagad?.enabled) }))
+      .catch(() => {});
   }, []);
 
   const deliveryCharge =
@@ -67,10 +72,30 @@ export default function CheckoutPage() {
         const detail = Array.isArray(d.issues) ? d.issues.map((issue: { message?: string }) => issue.message).filter(Boolean).join(" • ") : "";
         throw new Error(detail || d.error || "Checkout failed");
       }
+      const orderData = {
+        ...d,
+        paymentMethod: d.paymentMethod || form.paymentMethod,
+        paymentStatus: d.paymentStatus || (form.paymentMethod === "cod" ? "unpaid" : "pending"),
+      };
       try {
-        sessionStorage.setItem("pks_last_order", JSON.stringify(d));
+        sessionStorage.setItem("pks_last_order", JSON.stringify(orderData));
       } catch {}
       clear();
+      if (d.paymentStartUrl) {
+        const payment = await fetch(d.paymentStartUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: d.orderId }),
+        });
+        const paymentData = await payment.json();
+        if (payment.ok && paymentData.redirectUrl) {
+          window.location.href = paymentData.redirectUrl;
+          return;
+        }
+        sessionStorage.setItem("pks_payment_error", paymentData.error || "bKash payment could not be started.");
+        window.location.href = `/order-success?order=${encodeURIComponent(d.orderNumber)}&payment=pending`;
+        return;
+      }
       window.location.href = `/order-success?order=${d.orderNumber}`;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Checkout failed");
@@ -149,15 +174,8 @@ export default function CheckoutPage() {
               <div className="rounded-2xl border bg-white p-4">
                 <div className="font-extrabold">3. Payment Method</div>
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {[
-                    ["cod", "Cash on Delivery"],
-                    ["bkash", "bKash"],
-                    ["nagad", "Nagad"],
-                    ["bank", "Bank Transfer"],
-                    ["advance", "Advance"],
-                    ["partial", "Partial"],
-                  ].map(([v, l]) => (
-                    <button type="button" key={v} onClick={() => set("paymentMethod", v)} className={`rounded-xl border px-3 py-2.5 text-sm font-bold ${form.paymentMethod === v ? "border-slate-900 bg-slate-900 text-white" : "bg-white"}`}>{l}</button>
+                  {PAYMENT_METHODS.map(({ value, label }) => (
+                    <button type="button" key={value} onClick={() => set("paymentMethod", value)} className={`rounded-xl border px-3 py-2.5 text-sm font-bold ${form.paymentMethod === value ? "border-slate-900 bg-slate-900 text-white" : "bg-white"}`}>{label}</button>
                   ))}
                 </div>
                 <label className="mt-3 block">Coupon Code (if any)

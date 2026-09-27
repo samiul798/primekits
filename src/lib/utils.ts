@@ -48,6 +48,14 @@ export function effectivePrice(selling: number, discount?: number | string | nul
   return selling;
 }
 
+export const PRODUCT_SIZES = ["S", "M", "L", "XL"] as const;
+
+export function sortProductSizes(values: readonly (string | null | undefined)[]): string[] {
+  const rank = new Map(PRODUCT_SIZES.map((size, index) => [size.toLowerCase(), index]));
+  return [...new Set(values.filter((value): value is string => Boolean(value && value.trim())))]
+    .sort((a, b) => (rank.get(a.toLowerCase()) ?? PRODUCT_SIZES.length) - (rank.get(b.toLowerCase()) ?? PRODUCT_SIZES.length));
+}
+
 export const DIVISIONS = [
   "Dhaka",
   "Chattogram",
@@ -74,13 +82,9 @@ export const ORDER_STATUSES = [
 ];
 
 export const PAYMENT_METHODS = [
-  { value: "cod", label: "Cash on Delivery" },
   { value: "bkash", label: "bKash" },
   { value: "nagad", label: "Nagad" },
-  { value: "bank", label: "Bank Transfer" },
-  { value: "cash", label: "Cash" },
-  { value: "advance", label: "Advance Payment" },
-  { value: "partial", label: "Partial Payment" },
+  { value: "cod", label: "Cash on Delivery" },
 ];
 
 export const COURIER_STATUSES = [

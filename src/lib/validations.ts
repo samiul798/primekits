@@ -46,7 +46,7 @@ export const checkoutSchema = z.object({
   postal: z.string().max(20).optional().nullable(),
   deliveryZone: z.enum(["inside_dhaka", "outside_dhaka", "sub_dhaka"]).default("outside_dhaka"),
   notes: z.string().max(1000).optional().nullable(),
-  paymentMethod: z.enum(["cod", "bkash", "nagad", "bank", "cash", "advance", "partial"]).default("cod"),
+  paymentMethod: z.enum(["cod", "bkash", "nagad"]).default("cod"),
   couponCode: z.string().max(40).optional().nullable(),
   items: z.array(checkoutItemSchema).min(1, "Cart is empty").max(30),
 });

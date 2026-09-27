@@ -16,6 +16,11 @@ export type WhatsAppOrderPayload = {
   discount: number;
   grandTotal: number;
   paymentMethod: string;
+  paymentStatus?: string | null;
+  paymentReference?: string | null;
+  paidAmount?: number;
+  dueAmount?: number;
+  codAmount?: number;
   notes?: string | null;
 };
 
@@ -53,6 +58,10 @@ export function buildWhatsAppMessage(o: WhatsAppOrderPayload): string {
   if (o.discount > 0) lines.push(`Discount: -${formatBDT(o.discount)}`);
   lines.push(`*Total: ${formatBDT(o.grandTotal)}*`);
   lines.push(`Payment: ${paymentLabel(o.paymentMethod)}`);
+  if (o.paymentStatus) lines.push(`Payment status: ${o.paymentStatus}`);
+  if (o.paymentReference) lines.push(`Transaction/reference: ${o.paymentReference}`);
+  if (o.paidAmount != null) lines.push(`Paid: ${formatBDT(o.paidAmount)}`);
+  if (o.dueAmount != null) lines.push(`Due/COD: ${formatBDT(o.codAmount ?? o.dueAmount)}`);
   if (o.notes) lines.push(`Note: ${o.notes}`);
   lines.push(`Please confirm my order. Thank you!`);
   return lines.join("\n");

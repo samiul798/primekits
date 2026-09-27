@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ImageUploadButton } from "@/components/admin-image-upload";
 import { SafeImage } from "@/components/safe-image";
+import { PRODUCT_SIZES, sortProductSizes } from "@/lib/utils";
 
 type Product = {
   id: string;
@@ -58,7 +59,7 @@ export default function AdminProducts() {
   const [form, setForm] = useState({ name: "", sku: "", sellingPrice: "", discountPrice: "", purchaseCost: "0", status: "draft", categoryId: "", brand: "PrimeKits", material: "", shortDescription: "", description: "", thumbnail: "", images: [] as string[], sizeChartImage: "", sizeChartNote: "", specificationsText: "", featuresText: "", isFeatured: false, isNewArrival: false, isBestSeller: false });
   const [variants, setVariants] = useState<Variant[]>([]);
   const [manageFor, setManageFor] = useState<Product | null>(null);
-  const [vform, setVform] = useState({ size: "M", color: "Black", sku: "", sellingPrice: "", discountPrice: "", purchaseCost: "0", stockQty: "20", image: "" });
+  const [vform, setVform] = useState({ size: "M", sku: "", sellingPrice: "", discountPrice: "", purchaseCost: "0", stockQty: "20", image: "" });
   const [stockAdj, setStockAdj] = useState({ variantId: "", type: "purchase", quantity: "10", reason: "", direction: "add", unitCost: "" });
   const [stockSaving, setStockSaving] = useState(false);
 
@@ -158,7 +159,7 @@ export default function AdminProducts() {
     const r = await fetch(`/api/admin/variants?productId=${p.id}`);
     const d = await r.json();
     setVariants(d.variants || []);
-    setVform({ size: "M", color: "Black", sku: `${p.sku}-M-BLA`, sellingPrice: String(p.sellingPrice), discountPrice: p.discountPrice ? String(p.discountPrice) : "", purchaseCost: String(p.purchaseCost || 0), stockQty: "20", image: "" });
+    setVform({ size: "M", sku: `${p.sku}-M`, sellingPrice: String(p.sellingPrice), discountPrice: p.discountPrice ? String(p.discountPrice) : "", purchaseCost: String(p.purchaseCost || 0), stockQty: "20", image: "" });
   }
 
   async function addVariant() {
@@ -169,7 +170,6 @@ export default function AdminProducts() {
       body: JSON.stringify({
         productId: manageFor.id,
         size: vform.size || null,
-        color: vform.color || null,
         sku: vform.sku,
         sellingPrice: Number(vform.sellingPrice),
         discountPrice: vform.discountPrice ? Number(vform.discountPrice) : null,
@@ -311,7 +311,7 @@ export default function AdminProducts() {
               </div>
             </div>
             <button onClick={save} className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 font-bold text-white">Save Product</button>
-            <p className="mt-2 text-[11px] text-slate-500">Only “published” products appear on the website. Add size/color variants after saving.</p>
+            <p className="mt-2 text-[11px] text-slate-500">Only “published” products appear on the website. Add size variants after saving.</p>
           </div>
         </div>
       ) : null}
@@ -321,19 +321,18 @@ export default function AdminProducts() {
           <div className="mx-auto max-w-2xl rounded-3xl bg-white p-5">
             <div className="flex items-center justify-between"><h2 className="font-black">Variants — {manageFor.name}</h2><button onClick={() => setManageFor(null)} className="rounded-full border px-3 py-1 text-sm font-bold">✕</button></div>
             <div className="mt-3 space-y-2">
-              {variants.map((v) => (
+              {sortProductSizes(variants.map((v) => v.size)).flatMap((size) => variants.filter((v) => v.size === size)).concat(variants.filter((v) => !v.size)).map((v) => (
                 <div key={v.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border bg-white p-3 text-sm shadow-sm">
-                  <span><b>{v.label || `${v.size} / ${v.color}`}</b> <span className="text-slate-500">{v.sku}</span></span>
+                  <span><b>{v.label || v.size || v.sku}</b> <span className="text-slate-500">{v.sku}</span></span>
                   <span className="font-bold">৳{Number(v.discountPrice || v.sellingPrice).toLocaleString("en-IN")} <span className="font-normal text-slate-400">•</span> Stock {v.stockQty} <span className="font-normal text-slate-400">•</span> Return {v.returnedQty || 0} <span className="font-normal text-slate-400">•</span> Sold {v.soldQty || 0} <span className="font-normal text-slate-400">•</span> <span className={v.available <= 5 ? "text-rose-600" : "text-emerald-600"}>{v.available} avail</span></span>
                 </div>
               ))}
-              {variants.length === 0 ? <div className="text-sm text-slate-400">No variants yet — add size/color combos below. Each variation tracks its own stock.</div> : null}
+              {variants.length === 0 ? <div className="text-sm text-slate-400">No variants yet — add size variations below. Each variation tracks its own stock.</div> : null}
             </div>
             <div className="mt-4 rounded-2xl bg-slate-50 p-3">
               <div className="text-sm font-black">+ Add Variation</div>
               <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                <input value={vform.size} onChange={(e) => setVform({ ...vform, size: e.target.value })} placeholder="Size (M)" className="rounded-xl border px-2 py-2 text-sm" />
-                <input value={vform.color} onChange={(e) => setVform({ ...vform, color: e.target.value })} placeholder="Color" className="rounded-xl border px-2 py-2 text-sm" />
+                <select value={vform.size} onChange={(e) => setVform({ ...vform, size: e.target.value })} className="rounded-xl border px-2 py-2 text-sm">{PRODUCT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
                 <input value={vform.sku} onChange={(e) => setVform({ ...vform, sku: e.target.value })} placeholder="SKU" className="rounded-xl border px-2 py-2 text-sm" />
                 <input type="number" value={vform.sellingPrice} onChange={(e) => setVform({ ...vform, sellingPrice: e.target.value })} placeholder="Sell ৳" className="rounded-xl border px-2 py-2 text-sm" />
                 <input type="number" value={vform.discountPrice} onChange={(e) => setVform({ ...vform, discountPrice: e.target.value })} placeholder="Disc ৳" className="rounded-xl border px-2 py-2 text-sm" />

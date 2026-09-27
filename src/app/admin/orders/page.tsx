@@ -17,6 +17,14 @@ type Order = {
   whatsappStatus: string;
   paymentStatus: string;
   paymentMethod: string;
+  paymentProvider?: string | null;
+  paymentReference?: string | null;
+  paymentTransactionId?: string | null;
+  paymentPaidAmount: number | string;
+  paymentDueAmount: number | string;
+  codAmount: number | string;
+  refundAmount: number | string;
+  paymentTimestamp?: string | null;
   grandTotal: number;
   subtotal: number;
   deliveryCharge: number;
@@ -220,6 +228,7 @@ export default function AdminOrders() {
               <button onClick={() => setSelected(null)} className="rounded-full border px-3 py-1 text-sm font-bold">✕</button>
             </div>
             <div className="mt-2 text-sm text-slate-600">{selected.customerName} • {selected.mobile} • {selected.address}</div>
+            <div className="mt-2 rounded-xl bg-slate-50 p-3 text-sm">Payment: <b>{selected.paymentMethod}</b> • Status: <b>{selected.paymentStatus}</b> • Total ৳{Number(selected.grandTotal).toLocaleString("en-IN")} • Paid ৳{Number(selected.paymentPaidAmount || 0).toLocaleString("en-IN")} • Due/COD ৳{Number(selected.codAmount || selected.paymentDueAmount || 0).toLocaleString("en-IN")} {selected.paymentTransactionId || selected.paymentReference ? `• Ref: ${selected.paymentTransactionId || selected.paymentReference}` : ""}</div>
             <div className="mt-2 space-y-1 text-sm">
               {selected.items.map((it, i) => (
                 <div key={i} className="flex justify-between border-b py-1"><span>{it.productName} {it.variationLabel ? `(${it.variationLabel})` : ""} × {it.quantity}</span><b>৳{(it.unitPrice * it.quantity).toLocaleString("en-IN")}</b></div>
