@@ -185,7 +185,11 @@ export async function POST(req: NextRequest) {
     if (data.deliveryZone === "inside_dhaka") deliveryCharge = Number(settings.deliveryInsideDhaka || 60);
     else if (data.deliveryZone === "sub_dhaka") deliveryCharge = Number(settings.deliverySubDhaka || 100);
     else deliveryCharge = Number(settings.deliveryOutsideDhaka || 130);
-    if (Number(settings.freeDeliveryAbove || 0) > 0 && subtotal >= Number(settings.freeDeliveryAbove)) deliveryCharge = 0;
+    // Delivery is always collected for COD/unpaid orders. Do not let the
+    // optional free-delivery setting remove the amount from the COD balance.
+    if (data.paymentMethod !== "cod" && Number(settings.freeDeliveryAbove || 0) > 0 && subtotal >= Number(settings.freeDeliveryAbove)) {
+      deliveryCharge = 0;
+    }
 
     // coupon
     let discount = 0;
