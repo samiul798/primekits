@@ -429,6 +429,10 @@ export async function POST(req: NextRequest) {
       whatsappAutomation,
       paymentMethod: data.paymentMethod,
       paymentStatus: order.paymentStatus,
+      paymentAmount: grandTotal,
+      paymentPaidAmount: Number(order.paymentPaidAmount || 0),
+      paymentDueAmount: Number(order.paymentDueAmount || grandTotal),
+      codAmount: Number(order.codAmount || grandTotal),
       paymentStartUrl: data.paymentMethod === "bkash" ? "/api/payments/bkash/start" : null,
     });
   } catch (e: unknown) {

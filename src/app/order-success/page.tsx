@@ -9,7 +9,7 @@ function Inner() {
   const sp = useSearchParams();
   const orderNo = sp.get("order") || "";
   const [settings, setSettings] = useState<Record<string, string>>({ businessName: "PrimeKits Studio", whatsapp: "" });
-  const [data, setData] = useState<{ whatsappUrl?: string; message?: string; grandTotal?: number; paymentMethod?: string; paymentStatus?: string; paymentPaidAmount?: number; paymentDueAmount?: number; codAmount?: number; paymentReference?: string | null } | null>(null);
+  const [data, setData] = useState<{ whatsappUrl?: string; message?: string; subtotal?: number; deliveryCharge?: number; discount?: number; grandTotal?: number; paymentMethod?: string; paymentStatus?: string; paymentPaidAmount?: number; paymentDueAmount?: number; codAmount?: number; paymentReference?: string | null } | null>(null);
 
   useEffect(() => {
     fetch("/api/settings").then((r) => r.json()).then((d) => d.settings && setSettings(d.settings)).catch(() => {});
@@ -43,7 +43,13 @@ function Inner() {
           <div className="mx-auto mt-4 max-w-sm rounded-2xl border-2 border-dashed border-slate-300 bg-white p-4">
             <div className="text-xs text-slate-500">ORDER NUMBER</div>
             <div className="text-xl font-black tracking-wide">{orderNo}</div>
-            {data?.grandTotal ? <div className="mt-1 text-sm font-bold">Total: ৳{Number(data.grandTotal).toLocaleString("en-IN")} • Payment: {data.paymentMethod === "cod" ? "Cash on Delivery" : data.paymentMethod || "Pending"} • Paid: ৳{Number(data.paymentPaidAmount || 0).toLocaleString("en-IN")} • Due/COD: ৳{Number(data.codAmount ?? data.paymentDueAmount ?? 0).toLocaleString("en-IN")}</div> : null}
+            {data?.grandTotal ? <div className="mt-2 text-left text-sm">
+              <div className="flex justify-between"><span>Items</span><b>৳{Number(data.subtotal || 0).toLocaleString("en-IN")}</b></div>
+              <div className="flex justify-between"><span>Delivery</span><b>৳{Number(data.deliveryCharge || 0).toLocaleString("en-IN")}</b></div>
+              {Number(data.discount || 0) > 0 ? <div className="flex justify-between"><span>Discount</span><b>-৳{Number(data.discount).toLocaleString("en-IN")}</b></div> : null}
+              <div className="mt-1 flex justify-between border-t pt-1 font-black"><span>Total</span><span>৳{Number(data.grandTotal).toLocaleString("en-IN")}</span></div>
+              <div className="mt-1 text-xs text-slate-600">Payment: {data.paymentMethod === "cod" ? "Cash on Delivery" : data.paymentMethod || "Pending"} • Paid: ৳{Number(data.paymentPaidAmount || 0).toLocaleString("en-IN")} • Remaining COD/Due: ৳{Number(data.codAmount ?? data.paymentDueAmount ?? data.grandTotal ?? 0).toLocaleString("en-IN")}</div>
+            </div> : null}
           </div>
         ) : null}
         <div className="mt-6 rounded-2xl border bg-amber-50 p-4 text-left text-sm">
