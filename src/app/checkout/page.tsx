@@ -8,7 +8,7 @@ import { DIVISIONS, PAYMENT_METHODS } from "@/lib/utils";
 import { SafeImage } from "@/components/safe-image";
 
 export default function CheckoutPage() {
-  const { items, subtotal, clear } = useCart();
+  const { items, subtotal, updateQty, removeItem, clear } = useCart();
   const [settings, setSettings] = useState<Record<string, number | string>>({ businessName: "PrimeKits Studio", deliveryInsideDhaka: 60, deliveryOutsideDhaka: 130, deliverySubDhaka: 100 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -196,6 +196,12 @@ export default function CheckoutPage() {
                     <div className="flex-1">
                       <div className="font-bold">{i.name} {i.variationLabel ? `(${i.variationLabel})` : ""}</div>
                       <div className="text-slate-500">{i.quantity} × ৳{i.unitPrice.toLocaleString("en-IN")}</div>
+                      <div className="mt-1 flex items-center gap-1">
+                        <button type="button" onClick={() => updateQty(i.productId, i.variantId, i.quantity - 1)} className="h-6 w-6 rounded-md border font-black leading-none hover:bg-slate-100" aria-label={`Decrease ${i.name}`}>−</button>
+                        <span className="min-w-6 text-center text-xs font-bold">{i.quantity}</span>
+                        <button type="button" onClick={() => updateQty(i.productId, i.variantId, i.quantity + 1)} disabled={i.quantity >= i.maxStock} className="h-6 w-6 rounded-md border font-black leading-none hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40" aria-label={`Increase ${i.name}`}>+</button>
+                        <button type="button" onClick={() => removeItem(i.productId, i.variantId)} className="ml-1 px-1 text-[11px] font-bold text-rose-600 hover:underline">Remove</button>
+                      </div>
                     </div>
                     <div className="font-bold">৳{(i.quantity * i.unitPrice).toLocaleString("en-IN")}</div>
                   </div>
