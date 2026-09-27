@@ -1,6 +1,11 @@
 {
   "name": "nextjs-postgresql-template",
   "private": true,
+  "allowScripts": [
+    "esbuild",
+    "sharp",
+    "unrs-resolver"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
