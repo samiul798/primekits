@@ -22,6 +22,8 @@ const NAV = [
   { label: "Settings", href: "/admin/settings", code: "ST" },
 ];
 
+const NAV_TONES = ["bg-sky-100 text-sky-800", "bg-amber-100 text-amber-800", "bg-teal-100 text-teal-800", "bg-rose-100 text-rose-800"];
+
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const router = useRouter();
@@ -44,13 +46,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[#f4f6f8] text-slate-950">
-      <header className="sticky top-0 z-40 border-b border-slate-800 bg-[#102238] text-white">
+      <header className="sticky top-0 z-40 border-b-4 border-amber-400 bg-[#102238] text-white">
         <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6">
           <button onClick={() => setOpen((value) => !value)} className="border border-white/30 px-3 py-2 text-xs font-bold md:hidden" aria-label="Toggle navigation">Menu</button>
           <Link href="/admin" className="font-black tracking-tight">PrimeKits <span className="text-amber-300">Operations</span></Link>
           <span className="hidden border-l border-white/20 pl-3 text-xs text-slate-300 sm:block">Bangladesh commerce desk</span>
           <div className="ml-auto flex items-center gap-2 text-sm">
-            <Link href="/" target="_blank" className="hidden border border-white/25 px-3 py-2 text-xs font-bold hover:bg-white/10 sm:block">View storefront</Link>
+            <Link href="/" target="_blank" className="hidden border border-sky-300 bg-sky-500/20 px-3 py-2 text-xs font-bold text-sky-100 hover:bg-sky-500/30 sm:block">View storefront</Link>
             <AdminPdfButton />
             <span className="hidden border-l border-white/20 pl-3 text-xs text-slate-300 lg:block">{admin?.name || "Loading account"}</span>
             <button onClick={logout} className="border border-rose-400 bg-rose-700 px-3 py-2 text-xs font-bold hover:bg-rose-600">Sign out</button>
@@ -60,11 +62,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="mx-auto flex max-w-[1440px] gap-5 px-4 py-5 sm:px-6">
         <aside className={`${open ? "block" : "hidden"} w-60 shrink-0 md:block`}>
           <nav className="sticky top-20 border border-slate-200 bg-white p-2 shadow-sm">
-            <p className="px-3 pb-2 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
+            <p className="border-b border-slate-100 px-3 pb-3 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
             <div className="space-y-0.5">
-              {NAV.map((item) => {
+              {NAV.map((item, index) => {
                 const active = path === item.href || (item.href !== "/admin" && path.startsWith(item.href));
-                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-amber-400 bg-slate-100 text-slate-950" : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className="w-5 text-[10px] font-black text-slate-400">{item.code}</span>{item.label}</Link>;
+                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-amber-400 bg-amber-50 text-slate-950" : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className={`flex h-6 w-6 items-center justify-center text-[9px] font-black ${NAV_TONES[index % NAV_TONES.length]}`}>{item.code}</span>{item.label}</Link>;
               })}
             </div>
           </nav>

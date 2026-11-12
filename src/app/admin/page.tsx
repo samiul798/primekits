@@ -14,6 +14,16 @@ type Dash = {
 };
 
 const COLORS = ["#102238", "#c58b19", "#0f766e", "#b91c1c", "#475569", "#0369a1"];
+const KPI_TONES = [
+  "border-t-4 border-t-sky-500 bg-sky-50",
+  "border-t-4 border-t-amber-500 bg-amber-50",
+  "border-t-4 border-t-teal-500 bg-teal-50",
+  "border-t-4 border-t-rose-500 bg-rose-50",
+  "border-t-4 border-t-blue-500 bg-blue-50",
+  "border-t-4 border-t-cyan-500 bg-cyan-50",
+  "border-t-4 border-t-emerald-500 bg-emerald-50",
+  "border-t-4 border-t-orange-500 bg-orange-50",
+];
 const formatMoney = (value: number) => `BDT ${Number(value || 0).toLocaleString("en-IN")}`;
 
 export default function AdminDashboard() {
@@ -60,15 +70,15 @@ export default function AdminDashboard() {
 
   return <div className="space-y-5">
     <div className="border-b border-slate-300 pb-5 sm:flex sm:items-end sm:justify-between">
-      <div><p className="text-[11px] font-bold tracking-[.16em] text-slate-500">OPERATIONS OVERVIEW</p><h1 className="mt-1 text-2xl font-black tracking-tight">Store dashboard</h1><p className="mt-1 text-sm text-slate-600">Live figures from the connected store database.</p></div>
+      <div><p className="text-[11px] font-bold tracking-[.16em] text-sky-700">OPERATIONS OVERVIEW</p><h1 className="mt-1 text-2xl font-black tracking-tight">Store dashboard</h1><p className="mt-1 text-sm text-slate-600">Live figures from the connected store database.</p></div>
       <div className="mt-4 flex flex-wrap gap-2 sm:mt-0">
-        {[7, 30, 90].map((range) => <button key={range} onClick={() => { setDays(range); load(range); }} className={`border px-3 py-2 text-xs font-bold ${days === range ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-700"}`}>{range} days</button>)}
-        <button onClick={cleanup} className="border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-950">Release expired holds</button>
+        {[7, 30, 90].map((range) => <button key={range} onClick={() => { setDays(range); load(range); }} className={`border px-3 py-2 text-xs font-bold ${days === range ? "border-sky-800 bg-sky-800 text-white" : "border-slate-300 bg-white text-slate-700"}`}>{range} days</button>)}
+        <button onClick={cleanup} className="border border-teal-700 bg-teal-50 px-3 py-2 text-xs font-bold text-teal-800 hover:bg-teal-100">Release expired holds</button>
       </div>
     </div>
     {error ? <div className="border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{error}</div> : null}
 
-    <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">{cards.map(([label, value]) => <div key={label} className="border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">{label}</p><p className="mt-2 text-xl font-black tracking-tight text-slate-950">{value}</p></div>)}</section>
+    <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">{cards.map(([label, value], index) => <div key={label} className={`border border-slate-200 p-4 shadow-sm ${KPI_TONES[index]}`}><p className="text-xs font-bold uppercase tracking-wide text-slate-600">{label}</p><p className="mt-2 text-xl font-black tracking-tight text-slate-950">{value}</p></div>)}</section>
 
     <section className="grid gap-5 xl:grid-cols-2">
       <div className="border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><h2 className="font-black">Daily revenue</h2><span className="text-xs text-slate-500">BDT</span></div><div className="mt-4 h-64"><ResponsiveContainer width="100%" height="100%"><BarChart data={data?.daily || []}><XAxis dataKey="date" tick={{ fontSize: 10 }} interval={Math.max(0, Math.floor((data?.daily.length || 1) / 8))} /><YAxis tick={{ fontSize: 10 }} /><Tooltip formatter={(value) => formatMoney(Number(value))} /><Bar dataKey="revenue" fill="#102238" radius={0} /></BarChart></ResponsiveContainer></div></div>
@@ -82,5 +92,5 @@ export default function AdminDashboard() {
   </div>;
 }
 
-function ListPanel({ title, action, href, children }: { title: string; action: string; href: string; children: React.ReactNode }) { return <div className="border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between border-b border-slate-200 pb-3"><h2 className="font-black">{title}</h2><Link href={href} className="text-xs font-bold text-slate-700 underline underline-offset-4">{action}</Link></div>{children}</div>; }
+function ListPanel({ title, action, href, children }: { title: string; action: string; href: string; children: React.ReactNode }) { return <div className="border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between border-b-2 border-sky-100 pb-3"><h2 className="font-black">{title}</h2><Link href={href} className="text-xs font-bold text-sky-800 underline underline-offset-4">{action}</Link></div>{children}</div>; }
 function EmptyState({ text }: { text: string }) { return <p className="py-8 text-center text-sm text-slate-500">{text}</p>; }
