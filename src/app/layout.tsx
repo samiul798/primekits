@@ -10,11 +10,12 @@ export const metadata: Metadata = {
   },
   description:
     "PrimeKits Studio sells jerseys, T-shirts, shirts, hoodies and high-necks in Bangladesh. Cash on Delivery and WhatsApp order confirmation.",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en">
       <body className="bg-slate-50 text-slate-900 antialiased">
         <CartProvider>{children}</CartProvider>
       </body>

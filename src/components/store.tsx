@@ -35,7 +35,7 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
             <span className="block text-[15px] font-extrabold tracking-tight text-slate-900">
               {settings.businessName}
             </span>
-            <span className="hidden text-[11px] text-slate-500 sm:block">Premium Apparel • Bangladesh</span>
+            <span className="hidden text-[11px] text-slate-500 sm:block">Apparel for Bangladesh</span>
           </span>
         </Link>
         <nav className="ml-4 hidden items-center gap-5 text-sm font-medium text-slate-700 md:flex">
@@ -126,7 +126,7 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
         </div>
       </div>
       <div className="border-t border-white/10 px-4 py-4 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} {settings.businessName} • Dhaka, Bangladesh • All prices in BDT (৳)
+        Copyright {new Date().getFullYear()} {settings.businessName}. Dhaka, Bangladesh. All prices in BDT.
       </div>
     </footer>
   );
@@ -146,16 +146,16 @@ export function ProductCard({ p }: { p: { name: string; slug: string; thumbnail?
           <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500">Product image unavailable</div>
         )}
         <div className="absolute left-2 top-2 flex gap-1">
-          {p.isNewArrival ? <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-white">NEW</span> : null}
-          {p.isBestSeller ? <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[11px] font-bold text-slate-900">BEST</span> : null}
-          {dp && dp > 0 && dp < sp ? <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[11px] font-bold text-white">-{Math.round((1 - dp / sp) * 100)}%</span> : null}
+          {p.isNewArrival ? <span className="bg-emerald-700 px-2 py-1 text-[10px] font-bold tracking-wide text-white">NEW</span> : null}
+          {p.isBestSeller ? <span className="bg-amber-300 px-2 py-1 text-[10px] font-bold tracking-wide text-slate-950">BEST SELLER</span> : null}
+          {dp && dp > 0 && dp < sp ? <span className="bg-rose-700 px-2 py-1 text-[10px] font-bold tracking-wide text-white">SAVE {Math.round((1 - dp / sp) * 100)}%</span> : null}
         </div>
       </div>
       <div className="p-3.5">
         <div className="line-clamp-2 min-h-10 text-sm font-semibold text-slate-900">{p.name}</div>
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-[15px] font-extrabold text-slate-900">৳{price.toLocaleString("en-IN")}</span>
-          {dp && dp > 0 && dp < sp ? <span className="text-xs text-slate-400 line-through">৳{sp.toLocaleString("en-IN")}</span> : null}
+          <span className="text-[15px] font-extrabold text-slate-900">BDT {price.toLocaleString("en-IN")}</span>
+          {dp && dp > 0 && dp < sp ? <span className="text-xs text-slate-400 line-through">BDT {sp.toLocaleString("en-IN")}</span> : null}
         </div>
       </div>
     </Link>
