@@ -50,7 +50,7 @@ function SelectedSizeHint({ size, categorySlug }: { size: string; categorySlug?:
   if (!row) return null;
   return (
     <div className="mt-2 rounded-xl bg-slate-900 px-3 py-2 text-[12px] font-bold text-white">
-      ✅ Size {row.size}: Chest ~{row.chest}&quot;, Length ~{row.length}&quot;
+      Size {row.size}: Chest approximately {row.chest}&quot;, Length approximately {row.length}&quot;
       {row.sleeve ? `, Sleeve ~${row.sleeve}"` : ""}
       {row.shoulder ? `, Shoulder ~${row.shoulder}"` : ""} — {(chart.unit === "inch") ? "all in inches" : ""}
     </div>
@@ -87,7 +87,7 @@ function SizeChartModal({
       >
         <div className="flex items-center justify-between bg-slate-950 px-5 py-3 text-white">
           <div>
-            <div className="font-black">📏 {chart.title}</div>
+            <div className="font-black">{chart.title}</div>
             <div className="text-[11px] text-slate-300">{categoryName || "PrimeKits Studio"} • all measurements in inches</div>
           </div>
           <button onClick={onClose} className="rounded-full border border-white/30 px-3 py-1 text-sm font-bold hover:bg-white/10">✕ Close</button>
@@ -125,13 +125,13 @@ function SizeChartModal({
 
           {/* How to measure */}
           <div className="mt-3 rounded-2xl bg-amber-50 p-3 text-[13px]">
-            <div className="font-extrabold">📐 How to measure (কীভাবে মাপবেন)</div>
+            <div className="font-extrabold">How to measure (কীভাবে মাপবেন)</div>
             <ul className="mt-1.5 list-disc space-y-1 pl-5 text-slate-700">
               {chart.howTo.map((h, i) => (
                 <li key={i}>{h}</li>
               ))}
             </ul>
-            <p className="mt-2 rounded-xl bg-white/70 px-2 py-1.5 font-bold text-slate-800">💡 {productNote || chart.tipBn}</p>
+            <p className="mt-2 rounded-xl bg-white/70 px-2 py-1.5 font-bold text-slate-800">{productNote || chart.tipBn}</p>
           </div>
 
           <button onClick={onClose} className="mt-3 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-extrabold text-white">
@@ -199,7 +199,6 @@ export default function ProductPage() {
       <div className="min-h-screen">
         <SiteHeader settings={settings as never} />
         <div className="mx-auto max-w-xl px-4 py-16 text-center">
-          <div className="text-4xl">😕</div>
           <h1 className="mt-2 text-xl font-black">Product not found</h1>
           <Link href="/shop" className="mt-4 inline-block rounded-full bg-slate-900 px-5 py-2 text-sm font-bold text-white">Back to Shop</Link>
         </div>
@@ -242,7 +241,7 @@ export default function ProductPage() {
       quantity: qty,
     });
     if (buyNow) window.location.href = "/checkout";
-    else setMsg("✅ Added to cart!");
+    else setMsg("Added to cart.");
   }
 
   async function submitReview(e: React.FormEvent) {
@@ -278,9 +277,9 @@ export default function ProductPage() {
             >
               {images[imgIdx] ? (
                  
-                <SafeImage src={images[imgIdx]} alt={product.name} className={`h-full w-full bg-slate-100 object-contain object-center transition duration-300 ease-out md:group-hover:scale-150 ${zoom ? "scale-150" : ""}`} fallback="👕" />
+                <SafeImage src={images[imgIdx]} alt={product.name} className={`h-full w-full bg-slate-100 object-contain object-center transition duration-200 ease-out md:group-hover:scale-105 ${zoom ? "scale-105" : ""}`} fallback="Image unavailable" />
               ) : (
-                <div className="flex h-full items-center justify-center text-6xl">👕</div>
+                <div className="flex h-full items-center justify-center text-sm font-bold text-slate-500">Product image unavailable</div>
               )}
               {product.discountPrice && product.discountPrice < basePrice ? (
                 <span className="absolute left-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white">
@@ -301,7 +300,7 @@ export default function ProductPage() {
             {!sizes.length ? (
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <div><div className="text-sm font-extrabold">Size guide</div><div className="text-xs text-slate-500">See the measurement table before ordering.</div></div>
-                <button type="button" onClick={() => setShowSizeChart(true)} className="rounded-full bg-slate-900 px-3 py-2 text-xs font-extrabold text-white">📏 Size Chart</button>
+                <button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-900 bg-slate-900 px-3 py-2 text-xs font-extrabold text-white">Size chart</button>
               </div>
             ) : null}
           </div>
@@ -325,7 +324,7 @@ export default function ProductPage() {
                     onClick={() => setShowSizeChart(true)}
                     className="flex items-center gap-1 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-extrabold text-slate-800 hover:border-slate-900 hover:bg-slate-900 hover:text-white"
                   >
-                    📏 Size Chart
+                    Size chart
                   </button>
                 </div>
                 <div className="mt-2.5 flex flex-wrap gap-2">
@@ -362,9 +361,9 @@ export default function ProductPage() {
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
                   <span>
-                    <span className="mr-2">🟢 In stock</span>
-                    <span className="mr-2">🟡 Low</span>
-                    <span>🔴 Out</span>
+                    <span className="mr-2">In stock</span>
+                    <span className="mr-2">Low stock</span>
+                    <span>Out of stock</span>
                   </span>
                   <button type="button" onClick={() => setShowSizeChart(true)} className="font-bold text-slate-700 underline">
                     Confused? See size chart with image
@@ -382,15 +381,15 @@ export default function ProductPage() {
               {hasVariants ? (
                 activeVariant ? (
                   avail > 0 ? (
-                    avail <= 5 ? <span className="font-bold text-amber-600">⚠️ Only {avail} pcs left in stock!</span> : <span className="font-bold text-emerald-600">✅ In stock ({avail} pcs available)</span>
+                    avail <= 5 ? <span className="font-bold text-amber-600">Only {avail} pieces left in stock.</span> : <span className="font-bold text-emerald-600">In stock ({avail} pieces available)</span>
                   ) : (
-                    <span className="font-bold text-rose-600">❌ Out of stock for this variation</span>
+                    <span className="font-bold text-rose-600">Out of stock for this variation</span>
                   )
                 ) : (
                   <span className="text-slate-500">Select variations to see availability</span>
                 )
               ) : (
-                <span className="font-bold text-emerald-600">✅ In stock</span>
+                <span className="font-bold text-emerald-600">In stock</span>
               )}
             </div>
 
@@ -415,9 +414,9 @@ export default function ProductPage() {
             </div>
 
             <div className="product-assurance mt-4 space-y-2 rounded-2xl bg-slate-100 p-4 text-[13px]">
-              <div>🚚 <b>Delivery:</b> Inside Dhaka ৳60 • Outside Dhaka ৳130 (2–4 days)</div>
-              <div>🔁 <b>Exchange:</b> Size issue? Contact us on WhatsApp within 3 days.</div>
-              <div>💵 <b>Payment:</b> Cash on Delivery, bKash, Nagad available.</div>
+              <div><b>Delivery:</b> Inside Dhaka ৳60; outside Dhaka ৳130 (2–4 days)</div>
+              <div><b>Exchange:</b> For a size issue, contact us on WhatsApp within 3 days.</div>
+              <div><b>Payment:</b> Cash on Delivery, bKash and Nagad are available.</div>
             </div>
           </div>
         </div>
@@ -429,7 +428,7 @@ export default function ProductPage() {
             <p className="mt-2 whitespace-pre-line text-sm text-slate-600">{product.description || product.shortDescription || "Premium quality apparel from PrimeKits Studio."}</p>
             {product.features?.length ? (
               <ul className="mt-3 space-y-1 text-sm">
-                {product.features.map((f, i) => <li key={i}>✅ {f}</li>)}
+                {product.features.map((f, i) => <li key={i}>{f}</li>)}
               </ul>
             ) : null}
           </div>

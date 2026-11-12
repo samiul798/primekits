@@ -228,9 +228,9 @@ export default function AdminProducts() {
         {items.map((p) => (
           <div key={p.id} className="flex items-center gap-3 rounded-2xl border bg-white p-3">
             {p.thumbnail ? (
-              <SafeImage src={p.thumbnail} alt={`${p.name} thumbnail`} className="h-12 w-12 rounded-xl bg-slate-100 object-cover" fallback="👕" />
+              <SafeImage src={p.thumbnail} alt={`${p.name} thumbnail`} className="h-12 w-12 rounded-xl bg-slate-100 object-cover" fallback="Image unavailable" />
             ) : (
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-2xl">👕</span>
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-center text-[10px] font-bold text-slate-500">No image</span>
             )}
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-black">{p.name}</div>
@@ -281,7 +281,7 @@ export default function AdminProducts() {
                 {form.images.length ? <div className="mt-2 flex flex-wrap gap-2">{form.images.map((url, index) => <div key={`${url}-${index}`} className="relative"><img src={url} alt="Product preview" className="h-16 w-16 rounded-lg border object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} /><button type="button" onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== index), thumbnail: f.thumbnail === url ? f.images.filter((_, i) => i !== index)[0] || "" : f.thumbnail }))} className="absolute -right-1 -top-1 rounded-full bg-rose-600 px-1 text-xs text-white">×</button></div>)}</div> : null}
               </div>
               <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:col-span-2">
-                <div className="text-xs font-black">📏 Size Chart (shows beside “Select size” on product page)</div>
+                <div className="text-xs font-black">Size Chart (shows beside “Select size” on product page)</div>
                 <div className="mt-2"><ImageUploadButton label="Upload size chart image" onUploaded={(url) => setForm((f) => ({ ...f, sizeChartImage: url }))} /></div>
                 <label className="mt-2 block text-xs font-bold">Size Chart Image URL (optional — blank = global default)
                   <input value={form.sizeChartImage} onChange={(e) => setForm({ ...form, sizeChartImage: e.target.value })} placeholder="https://… or /images/size-guide.jpg" className="mt-1 w-full rounded-xl border bg-white px-3 py-2" />
@@ -343,7 +343,7 @@ export default function AdminProducts() {
               <button onClick={addVariant} className="mt-2 w-full rounded-xl bg-slate-900 px-3 py-2 text-sm font-bold text-white">Add Variant</button>
             </div>
             <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <div className="text-sm font-black">📦 Stock Adjustment</div>
+              <div className="text-sm font-black">Stock Adjustment</div>
               <p className="mt-1 text-xs text-slate-600">Every movement is saved in Inventory. Purchase updates weighted average cost; customer return increases both stock and return count. Reserved stock cannot be removed.</p>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <select value={stockAdj.variantId} onChange={(e) => setStockAdj({ ...stockAdj, variantId: e.target.value })} className="rounded-xl border px-2 py-2 text-sm sm:col-span-2">

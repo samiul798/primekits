@@ -89,8 +89,8 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
         <div>
           <div className="text-lg font-extrabold text-white">{settings.businessName}</div>
           <p className="mt-2 text-sm text-slate-400">{settings.tagline}</p>
-          <p className="mt-3 text-sm">Hotline: <a className="text-amber-300" href={`tel:${settings.phone}`}>{settings.phone}</a></p>
-          <p className="text-sm">WhatsApp: <span className="text-amber-300">{settings.whatsapp}</span></p>
+          {settings.phone ? <p className="mt-3 text-sm">Hotline: <a className="text-amber-300" href={`tel:${settings.phone}`}>{settings.phone}</a></p> : null}
+          {settings.whatsapp ? <p className="text-sm">WhatsApp: <span className="text-amber-300">{settings.whatsapp}</span></p> : null}
         </div>
         <div>
           <div className="text-sm font-bold uppercase tracking-wide text-white">Shop</div>

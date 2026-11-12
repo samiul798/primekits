@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { PageSkeleton } from "@/components/skeleton";
@@ -22,7 +22,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function load(range = days) {
+  const load = useCallback(async (range: number) => {
     setLoading(true);
     setError("");
     try {
@@ -35,9 +35,9 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  useEffect(() => { load(30); }, []);
+  useEffect(() => { void load(30); }, [load]);
 
   async function cleanup() {
     try {
@@ -45,12 +45,12 @@ export default function AdminDashboard() {
       const result = await response.json().catch(() => null);
       if (!response.ok) throw new Error(result?.error || "Could not release reservations");
       alert(result?.released != null ? `${result.released} expired reservations released.` : "Reservation cleanup completed.");
-      load();
+      void load(days);
     } catch (cause) { alert(cause instanceof Error ? cause.message : "Could not release reservations"); }
   }
 
   if (loading && !data) return <PageSkeleton cards={8} />;
-  if (error && !data) return <div className="border border-rose-200 bg-rose-50 p-6"><p className="font-bold text-rose-800">{error}</p><button onClick={() => load()} className="mt-4 border border-slate-900 bg-slate-900 px-4 py-2 text-sm font-bold text-white">Retry</button></div>;
+  if (error && !data) return <div className="border border-rose-200 bg-rose-50 p-6"><p className="font-bold text-rose-800">{error}</p><button onClick={() => void load(days)} className="mt-4 border border-slate-900 bg-slate-900 px-4 py-2 text-sm font-bold text-white">Retry</button></div>;
 
   const k = data?.kpis || {};
   const cards: [string, number | string][] = [

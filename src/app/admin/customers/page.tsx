@@ -26,7 +26,7 @@ export default function AdminCustomers() {
   async function saveRisk() {
     if (!sel) return;
     await fetch("/api/admin/customers", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: sel.id, riskOverride: override || null, riskNote: note || null }) });
-    alert("Risk override saved ✅");
+    alert("Risk override saved.");
     setSel(null);
     load();
   }
@@ -60,7 +60,7 @@ export default function AdminCustomers() {
               <b>{c.name}</b><span className="text-slate-500">{c.mobile}</span>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold">{c.totalOrders} orders • ৳{Number(c.totalValue).toLocaleString("en-IN")}</span>
               <span className="ml-auto flex gap-1">
-                <Link href={`/admin/fraud?mobile=${c.mobile}`} className="rounded-full border px-3 py-1 text-xs font-bold">🛡️ Fraud Check</Link>
+                <Link href={`/admin/fraud?mobile=${c.mobile}`} className="border px-3 py-1 text-xs font-bold">Fraud check</Link>
                 <button onClick={() => { setSel(c); setOverride(c.riskOverride || ""); setNote(c.riskNote || ""); }} className="rounded-full border px-3 py-1 text-xs font-bold">Risk Override</button>
                 <button onClick={() => removeCustomer(c)} className="rounded-full border border-rose-200 px-3 py-1 text-xs font-bold text-rose-700">Remove</button>
               </span>

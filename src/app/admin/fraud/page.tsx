@@ -105,7 +105,7 @@ export default function FraudPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-black">🛡️ Fraud Check / Customer Risk Analysis</h1>
+      <h1 className="text-xl font-black">Fraud Check / Customer Risk Analysis</h1>
       <p className="text-xs text-slate-500">Risk level is an indicator only — never auto-labels anyone as a fraudster. All metrics come from real database orders.</p>
 
       <div className="grid gap-2 rounded-2xl border bg-white p-3 md:grid-cols-5">
@@ -121,14 +121,14 @@ export default function FraudPage() {
           <option value="returned">Returned only</option>
           <option value="cancelled">Cancelled only</option>
         </select>
-        <button onClick={search} disabled={loading} className="rounded-xl bg-slate-900 px-4 py-2 font-bold text-white disabled:opacity-50 md:col-span-5">{loading ? "Analyzing…" : "🔍 Run Fraud Check"}</button>
+        <button onClick={search} disabled={loading} className="rounded-xl bg-slate-900 px-4 py-2 font-bold text-white disabled:opacity-50 md:col-span-5">{loading ? "Analyzing…" : "Run fraud check"}</button>
         <div className="flex gap-2 md:col-span-5">
           <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-full rounded-xl border px-2 py-2" />
           <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-full rounded-xl border px-2 py-2" />
           {data?.orders ? (
             <>
               <button onClick={exportCSV} className="rounded-xl border px-3 py-2 text-sm font-bold">⬇ CSV</button>
-              <button onClick={() => window.print()} className="rounded-xl border px-3 py-2 text-sm font-bold">🖨️ Print</button>
+              <button onClick={() => window.print()} className="rounded-xl border px-3 py-2 text-sm font-bold">Print report</button>
             </>
           ) : null}
         </div>

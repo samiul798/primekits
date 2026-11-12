@@ -191,7 +191,7 @@ export default function CheckoutPage() {
                   <div key={`${i.productId}-${i.variantId}`} className="flex gap-2 text-xs">
                     {i.image ? (
                        
-                      <SafeImage src={i.image} alt={`${i.name} thumbnail`} className="h-10 w-10 shrink-0 rounded-lg bg-slate-100 object-contain" fallback="👕" />
+                      <SafeImage src={i.image} alt={`${i.name} thumbnail`} className="h-10 w-10 shrink-0 rounded-lg bg-slate-100 object-contain" fallback="Image unavailable" />
                     ) : null}
                     <div className="flex-1">
                       <div className="font-bold">{i.name} {i.variationLabel ? `(${i.variationLabel})` : ""}</div>
@@ -213,7 +213,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-base font-black"><span>Total</span><span>৳{(subtotal + deliveryCharge).toLocaleString("en-IN")}</span></div>
               </div>
               <button disabled={loading} className="mt-3 w-full rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-emerald-500 disabled:opacity-50">
-                {loading ? "Placing order…" : "✅ Place Order via WhatsApp"}
+                {loading ? "Placing order…" : "Place order via WhatsApp"}
               </button>
               <p className="mt-2 text-[11px] text-slate-500">By ordering you agree to our Terms & Return Policy. Stock & price are revalidated on the server.</p>
             </div>

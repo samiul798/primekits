@@ -21,7 +21,7 @@ function Inner() {
       const raw = sessionStorage.getItem("pks_last_order");
       if (raw) setData(JSON.parse(raw));
     } catch {}
-  }, []);
+  }, [orderNo]);
 
   function openWhatsApp() {
     if (data?.whatsappUrl) {
@@ -36,7 +36,7 @@ function Inner() {
     <div className="min-h-screen">
       <SiteHeader settings={settings as never} />
       <div className="mx-auto max-w-2xl px-4 py-10 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">✅</div>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center border-2 border-emerald-700 bg-emerald-50 text-xs font-black tracking-[.12em] text-emerald-800">ORDER</div>
         <h1 className="mt-4 text-2xl font-black">Order Placed Successfully!</h1>
         <p className="mt-1 text-sm text-slate-500">Your order has been created in our system.</p>
         {orderNo ? (
@@ -53,17 +53,17 @@ function Inner() {
           </div>
         ) : null}
         <div className="mt-6 rounded-2xl border bg-amber-50 p-4 text-left text-sm">
-          <div className="font-extrabold">📲 Final step — Confirm on WhatsApp (important!)</div>
+          <div className="font-extrabold">Final step: confirm on WhatsApp</div>
           <ol className="mt-2 list-decimal space-y-1 pl-5 text-slate-700">
             <li>Tap the green button below to open WhatsApp.</li>
-            <li>Your order details are already written — just press <b>Send</b>.</li>
+            <li>Your order details are already written. Press <b>Send</b> to continue.</li>
             <li>Our team will confirm your order & delivery charge on WhatsApp.</li>
           </ol>
           <p className="mt-2 text-xs text-slate-500">Note: Opening WhatsApp does not auto-confirm. Our admin verifies every order (status: Pending WhatsApp Confirmation → Confirmed).</p>
         </div>
         {data?.whatsappUrl ? (
           <button onClick={openWhatsApp} className="mt-4 w-full rounded-2xl bg-[#25D366] px-6 py-4 text-base font-extrabold text-white hover:brightness-95">
-            💬 Confirm Order on WhatsApp
+            Confirm order on WhatsApp
           </button>
         ) : (
           <Link href="/track" className="mt-4 block w-full rounded-2xl bg-slate-900 px-6 py-4 text-base font-extrabold text-white">Track Your Order</Link>

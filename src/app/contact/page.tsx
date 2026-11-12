@@ -22,11 +22,11 @@ export default function ContactPage() {
     const data = await r.json().catch(() => ({}));
     setLoading(false);
     if (r.ok) {
-      setDone("✅ Message sent! We will reply within 24 hours.");
+      setDone("Message sent. We will reply within 24 hours.");
       setForm({ name: "", mobile: "", email: "", subject: "", message: "" });
       if (data.whatsappUrl) window.location.assign(data.whatsappUrl);
     } else {
-      setDone("❌ Failed to send. Please WhatsApp us directly.");
+      setDone("Message could not be sent. Please contact us on WhatsApp.");
     }
   }
 

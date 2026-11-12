@@ -130,10 +130,9 @@ function ShopInner() {
           <div className="mt-8"><ProductGridSkeleton /></div>
         ) : items.length === 0 ? (
           <div className="mt-10 rounded-2xl border bg-white p-10 text-center">
-            <div className="text-4xl">🔍</div>
             <div className="mt-2 font-extrabold">No products found</div>
             <p className="text-sm text-slate-500">Try a different search or category.</p>
-            <Link href="/shop" className="mt-4 inline-block rounded-full bg-slate-900 px-5 py-2 text-sm font-bold text-white">Clear filters</Link>
+            <Link href="/shop" className="mt-4 inline-block border border-slate-900 bg-slate-900 px-5 py-2 text-sm font-bold text-white">Clear filters</Link>
           </div>
         ) : (
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

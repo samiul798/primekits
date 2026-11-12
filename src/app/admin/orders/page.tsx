@@ -142,7 +142,7 @@ export default function AdminOrders() {
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || "Save failed");
-      alert("Order updated ✅");
+      alert("Order updated.");
       setSelected(null);
       load(page);
     } catch (e: unknown) {
@@ -206,7 +206,7 @@ export default function AdminOrders() {
             <div className="mt-2 flex flex-wrap gap-2">
               <button onClick={() => openDetail(o)} className="rounded-full border px-3 py-1 text-xs font-bold">Manage</button>
               <a href={waLink(o)} target="_blank" className="rounded-full bg-[#25D366] px-3 py-1 text-xs font-bold text-white">WhatsApp</a>
-              <button onClick={() => printInvoice(o)} className="rounded-full border px-3 py-1 text-xs font-bold">🖨️ Invoice</button>
+              <button onClick={() => printInvoice(o)} className="border px-3 py-1 text-xs font-bold">Invoice</button>
               <button onClick={() => deleteOrder(o)} className="rounded-full border border-rose-200 px-3 py-1 text-xs font-bold text-rose-700">Delete</button>
             </div>
           </div>

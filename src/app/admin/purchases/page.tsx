@@ -52,7 +52,7 @@ export default function AdminPurchases() {
     });
     const result = await r.json();
     if (!r.ok) throw new Error(result.error || "Failed to save purchase");
-    alert("Purchase recorded & stock added ✅ (weighted average cost applied)");
+    alert("Purchase recorded and stock added (weighted average cost applied).");
     setRows([{ variantId: "", quantity: "10", unitCost: "250" }]);
     setPaid("");
     setInvoiceNo("");

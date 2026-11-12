@@ -33,8 +33,8 @@ export default function AdminSettings() {
     }
     const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     setSaving(false);
-    if (r.ok) setMsg("✅ Settings saved — logo, WhatsApp, delivery charges & risk thresholds are live on the website.");
-    else setMsg("❌ Save failed");
+    if (r.ok) setMsg("Settings saved. Logo, WhatsApp, delivery charges and risk thresholds are live on the website.");
+    else setMsg("Settings could not be saved.");
   }
 
   async function saveProfile() {
@@ -66,7 +66,7 @@ export default function AdminSettings() {
       </div>
 
       <div className="rounded-2xl border bg-white p-4">
-        <div className="font-extrabold">🏷️ Brand & Contact</div>
+        <div className="font-extrabold">Brand & Contact</div>
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
           {[["businessName", "Business Name"], ["tagline", "Tagline"], ["logo", "Logo URL"], ["phone", "Hotline"], ["whatsapp", "WhatsApp Number (8801…)"], ["email", "Email"], ["address", "Address"], ["announcement", "Announcement Bar"]].map(([k, l]) => (
             <label key={k} className="text-xs font-bold">{l}<input value={str(k)} onChange={(e) => set(k, e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" /></label>
@@ -77,7 +77,7 @@ export default function AdminSettings() {
       </div>
 
       <details className="rounded-2xl border bg-white p-4">
-        <summary className="cursor-pointer font-extrabold">📱 Social Links</summary>
+        <summary className="cursor-pointer font-extrabold">Social Links</summary>
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
           {[["facebook", "Facebook"], ["instagram", "Instagram"], ["youtube", "YouTube"], ["tiktok", "TikTok"]].map(([k, l]) => (
             <label key={k} className="text-xs font-bold">{l}<input value={str(k)} onChange={(e) => set(k, e.target.value)} placeholder="https://…" className="mt-1 w-full rounded-xl border px-3 py-2" /></label>
@@ -86,7 +86,7 @@ export default function AdminSettings() {
       </details>
 
       <div className="rounded-2xl border bg-white p-4">
-        <div className="font-extrabold">🚚 Delivery Charges (BDT)</div>
+        <div className="font-extrabold">Delivery Charges (BDT)</div>
         <div className="mt-2 grid gap-2 sm:grid-cols-4">
           {[["deliveryInsideDhaka", "Inside Dhaka"], ["deliverySubDhaka", "Sub-Dhaka"], ["deliveryOutsideDhaka", "Outside Dhaka"], ["freeDeliveryAbove", "Free above (0=off)"]].map(([k, l]) => (
             <label key={k} className="text-xs font-bold">{l}<input type="number" value={str(k)} onChange={(e) => set(k, e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" /></label>
@@ -98,7 +98,7 @@ export default function AdminSettings() {
       </div>
 
       <details className="rounded-2xl border bg-white p-4">
-        <summary className="cursor-pointer font-extrabold">📏 Global Size Chart <span className="font-normal text-slate-500">(optional)</span></summary>
+        <summary className="cursor-pointer font-extrabold">Global Size Chart <span className="font-normal text-slate-500">(optional)</span></summary>
         <p className="mt-1 text-xs text-slate-500">This image + note appear inside the “Size Chart” popup on every product page beside “Select size”. You can override per product from Products → Edit.</p>
         <label className="mt-2 block text-xs font-bold">Size Chart / Measurement Guide Image URL
           <input value={str("sizeChartImage")} onChange={(e) => set("sizeChartImage", e.target.value)} placeholder="/images/size-guide.jpg" className="mt-1 w-full rounded-xl border px-3 py-2" />
@@ -113,7 +113,7 @@ export default function AdminSettings() {
       </details>
 
       <details className="rounded-2xl border bg-white p-4">
-        <summary className="cursor-pointer font-extrabold">🛡️ Fraud Risk Thresholds <span className="font-normal text-slate-500">(advanced)</span></summary>
+        <summary className="cursor-pointer font-extrabold">Fraud Risk Thresholds <span className="font-normal text-slate-500">(advanced)</span></summary>
         <div className="mt-2 grid gap-2 sm:grid-cols-3">
           {[["riskSuccessLow", "LOW if success ≥ % (default 80)"], ["riskSuccessMedium", "MEDIUM floor % (default 50)"], ["riskRejectHigh", "HIGH if reject/return above % (default 40)"]].map(([k, l]) => (
             <label key={k} className="text-xs font-bold">{l}<input type="number" value={str(k)} onChange={(e) => set(k, e.target.value)} className="mt-1 w-full rounded-xl border px-3 py-2" /></label>

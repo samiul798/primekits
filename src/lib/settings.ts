@@ -29,10 +29,10 @@ export type BusinessSettings = {
 
 export const DEFAULT_SETTINGS: BusinessSettings = {
   businessName: "PrimeKits Studio",
-  tagline: "Premium Apparel — Jersey, T-Shirt, Shirt, Hoodie & High-Neck",
+  tagline: "Jerseys, T-shirts, shirts, hoodies and high-necks",
   logo: "",
-  phone: "01XXXXXXXXX",
-  whatsapp: "8801XXXXXXXXX",
+  phone: "",
+  whatsapp: "",
   email: "support@primekits.studio",
   address: "Dhaka, Bangladesh",
   facebook: "",
@@ -49,7 +49,7 @@ export const DEFAULT_SETTINGS: BusinessSettings = {
   riskRejectHigh: 40,
   announcement: "Cash on Delivery available all over Bangladesh",
   sizeChartImage: "/images/size-guide.svg",
-  sizeChartNote: "দুই সাইজের মাঝামাঝি হলে বড় সাইজটি নিন। Measure your best-fitting shirt and match with the chart.",
+  sizeChartNote: "Measure a shirt that fits you well, then compare it with the chart before ordering.",
 };
 
 export async function getSettings(): Promise<BusinessSettings> {
