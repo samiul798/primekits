@@ -119,7 +119,7 @@ function ShopInner() {
           </select>
           <select value={size} onChange={(e) => { setSize(e.target.value); setPage(1); }} className="rounded-xl border px-3 py-2">
             <option value="">All Sizes</option>
-            {["S", "M", "L", "XL", "XXL"].map((s) => <option key={s} value={s}>{s}</option>)}
+            {["S", "M", "L", "XL"].map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <input value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="Min ৳" inputMode="numeric" className="rounded-xl border px-3 py-2" />
           <input value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Max ৳" inputMode="numeric" className="rounded-xl border px-3 py-2" />

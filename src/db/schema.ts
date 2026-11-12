@@ -161,8 +161,17 @@ export const coupons = pgTable("coupons", {
   usedCount: integer("used_count").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
+  // Loyalty rewards use the established coupon calculation pipeline, but are
+  // bound to one returning customer and their qualifying delivered order.
+  customerId: uuid("customer_id"),
+  qualifyingOrderId: uuid("qualifying_order_id"),
+  redeemedOrderId: uuid("redeemed_order_id"),
+  kind: varchar("kind", { length: 30 }).notNull().default("standard"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (t) => [
+  index("coupons_customer_idx").on(t.customerId),
+  uniqueIndex("coupons_qualifying_order_unique").on(t.qualifyingOrderId),
+]);
 
 // ---------- Orders ----------
 export const orders = pgTable(

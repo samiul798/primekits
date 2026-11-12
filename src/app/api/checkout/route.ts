@@ -196,12 +196,20 @@ export async function POST(req: NextRequest) {
     let couponCode: string | null = null;
     let couponId: string | null = null;
     let couponUsedCount = 0;
+    let couponIsCustomerReward = false;
     if (data.couponCode) {
       const code = data.couponCode.trim().toUpperCase();
       const crow = await db.select().from(coupons).where(eq(coupons.code, code)).limit(1);
       const c = crow[0];
       if (c && c.isActive && (!c.expiresAt || new Date(c.expiresAt) > new Date())) {
-        if (subtotal >= Number(c.minOrder || 0)) {
+        // Returning-customer rewards are private: they must match the
+        // checkout customer, cannot be redeemed twice, and never discount delivery.
+        const rewardCustomer = c.kind === "returning_customer"
+          ? (await db.select({ id: customers.id }).from(customers).where(eq(customers.mobile, mobile)).limit(1))[0]
+          : null;
+        const rewardAllowed = c.kind !== "returning_customer" ||
+          (rewardCustomer?.id === c.customerId && !c.redeemedOrderId);
+        if (rewardAllowed && subtotal >= Number(c.minOrder || 0)) {
           if (c.usageLimit && (c.usedCount ?? 0) >= c.usageLimit) {
             // expired usage
           } else {
@@ -211,6 +219,7 @@ export async function POST(req: NextRequest) {
             couponCode = code;
             couponId = c.id;
             couponUsedCount = c.usedCount ?? 0;
+            couponIsCustomerReward = c.kind === "returning_customer";
           }
         }
       }
@@ -364,7 +373,9 @@ export async function POST(req: NextRequest) {
     // Count the coupon only after the order and its stock reservations exist.
     // Previously failed checkouts could consume a coupon without creating an order.
     if (couponId) {
-      await db.update(coupons).set({ usedCount: couponUsedCount + 1 }).where(eq(coupons.id, couponId));
+      await db.update(coupons)
+        .set({ usedCount: couponUsedCount + 1, ...(couponIsCustomerReward ? { redeemedOrderId: order.id, isActive: false } : {}) })
+        .where(eq(coupons.id, couponId));
     }
 
     await db.insert(orderStatusHistory).values({

@@ -6,6 +6,7 @@ import { orderStatusSchema } from "@/lib/validations";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { z } from "zod";
 import { generateOrderNumber, normalizeBDPhone } from "@/lib/utils";
+import { createDeliveredOrderReward } from "@/lib/customer-rewards";
 
 const TERMINAL_RELEASE = new Set(["cancelled", "rejected", "expired", "returned"]);
 const DELIVER_FINALIZE = new Set(["delivered"]);
@@ -362,5 +363,10 @@ export async function PUT(req: NextRequest) {
   }
 
   await db.update(orders).set(patch as never).where(eq(orders.id, id));
+  if (requestedStatus === "delivered" && order.status !== "delivered") {
+    // The reward is generated only after the delivered state has been written.
+    // Its unique qualifying-order index makes repeated courier events harmless.
+    await createDeliveredOrderReward(id);
+  }
   return NextResponse.json({ ok: true });
 }

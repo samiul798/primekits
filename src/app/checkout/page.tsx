@@ -12,6 +12,9 @@ export default function CheckoutPage() {
   const [settings, setSettings] = useState<Record<string, number | string>>({ businessName: "PrimeKits Studio", deliveryInsideDhaka: 60, deliveryOutsideDhaka: 130, deliverySubDhaka: 100 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [promo, setPromo] = useState<{ code: string; discount: number } | null>(null);
+  const [promoMessage, setPromoMessage] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
   const [onlinePayments, setOnlinePayments] = useState({ bkash: false, nagad: false });
   const [form, setForm] = useState({
     customerName: "",
@@ -46,6 +49,19 @@ export default function CheckoutPage() {
 
   function set(k: string, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function applyPromo() {
+    setPromoMessage(""); setPromo(null);
+    if (!form.mobile || !form.couponCode) return setPromoMessage("Enter your mobile number and promo code first.");
+    setPromoLoading(true);
+    try {
+      const r = await fetch("/api/promo/validate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: form.couponCode, mobile: form.mobile, subtotal }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Promo code could not be applied.");
+      setPromo({ code: d.code, discount: Number(d.discount || 0) });
+      setPromoMessage("Promo code applied. The final amount is rechecked securely when you place the order.");
+    } catch (e) { setPromoMessage(e instanceof Error ? e.message : "Promo code could not be applied."); } finally { setPromoLoading(false); }
   }
 
   async function submit(e: React.FormEvent) {
@@ -180,9 +196,9 @@ export default function CheckoutPage() {
                     <button type="button" key={value} onClick={() => set("paymentMethod", value)} className={`checkout-choice border px-3 py-3 text-sm font-bold ${form.paymentMethod === value ? "border-sky-800 bg-sky-800 text-white" : "border-slate-200 bg-white text-slate-700"}`}>{label}</button>
                   ))}
                 </div>
-                <label className="mt-3 block">Coupon Code (if any)
-                  <input value={form.couponCode} onChange={(e) => set("couponCode", e.target.value.toUpperCase())} placeholder="Enter a code" className="mt-1 w-full rounded-xl border px-3 py-2.5 uppercase" />
-                </label>
+                <div className="mt-3"><label className="block">Returning customer promo code
+                  <div className="mt-1 flex gap-2"><input value={form.couponCode} onChange={(e) => { set("couponCode", e.target.value.toUpperCase()); setPromo(null); }} placeholder="PRIME-XXXXXXXX" className="min-w-0 flex-1 rounded-xl border px-3 py-2.5 uppercase" /><button type="button" onClick={promo ? () => { setPromo(null); setPromoMessage("Promo removed."); } : applyPromo} disabled={promoLoading} className="rounded-xl border border-slate-900 px-4 text-sm font-bold hover:bg-slate-900 hover:text-white disabled:opacity-50">{promo ? "Remove" : promoLoading ? "Checking…" : "Apply"}</button></div>
+                </label>{promoMessage ? <p className={`mt-2 text-xs font-semibold ${promo ? "text-emerald-700" : "text-rose-700"}`}>{promoMessage}</p> : null}</div>
               </div>
               {error ? <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{error}</div> : null}
             </div>
@@ -211,8 +227,9 @@ export default function CheckoutPage() {
               </div>
               <div className="mt-5 space-y-2 border-t border-slate-200 pt-4 text-sm">
                 <div className="flex justify-between"><span>Subtotal</span><b>BDT {subtotal.toLocaleString("en-IN")}</b></div>
+                {promo ? <div className="flex justify-between text-emerald-700"><span>Promo discount</span><b>− BDT {promo.discount.toLocaleString("en-IN")}</b></div> : null}
                 <div className="flex justify-between"><span>Delivery</span><b>BDT {deliveryCharge.toLocaleString("en-IN")}</b></div>
-                <div className="flex justify-between border-t border-slate-200 pt-3 text-lg font-black"><span>Total</span><span>BDT {(subtotal + deliveryCharge).toLocaleString("en-IN")}</span></div>
+                <div className="flex justify-between border-t border-slate-200 pt-3 text-lg font-black"><span>Total</span><span>BDT {Math.max(0, subtotal + deliveryCharge - (promo?.discount || 0)).toLocaleString("en-IN")}</span></div>
               </div>
               <button disabled={loading} className="mt-5 w-full bg-emerald-700 px-4 py-4 text-sm font-extrabold text-white hover:bg-emerald-600 disabled:opacity-50">
                 {loading ? "Placing order…" : "Place order via WhatsApp"}

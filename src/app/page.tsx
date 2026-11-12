@@ -1,110 +1,32 @@
 import Link from "next/link";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { products, categories } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { categories, products } from "@/db/schema";
 import { getSettings } from "@/lib/settings";
-import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
+import { ProductCard, SiteFooter, SiteHeader } from "@/components/store";
 import { SafeImage } from "@/components/safe-image";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const settings = await getSettings();
-  let prods: typeof products.$inferSelect[] = [];
-  let cats: typeof categories.$inferSelect[] = [];
-  try {
-    [prods, cats] = await Promise.all([
-      db.select().from(products).where(eq(products.status, "published")).orderBy(desc(products.createdAt)).limit(40),
-      db.select().from(categories).where(eq(categories.isActive, true)).orderBy(categories.sortOrder).limit(20),
-    ]);
-  } catch {
-    // The storefront stays available while its database is being configured.
-  }
-
-  const fallback = prods.slice(0, 8);
-  const featured = prods.filter((p) => p.isFeatured).slice(0, 8);
-  const best = prods.filter((p) => p.isBestSeller).slice(0, 8);
-  const fresh = prods.filter((p) => p.isNewArrival).slice(0, 8);
-  const leadCategory = cats[0];
-  const supportingCategories = cats.slice(1, 4);
-
-  return (
-    <div className="min-h-screen bg-stone-50 text-slate-950">
-      <SiteHeader settings={settings as never} />
-      <main>
-        <section className="border-b border-slate-200 bg-[#102238] text-white">
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.04fr_.96fr] md:items-end md:py-16 lg:px-8">
-            <div className="max-w-2xl">
-              <p className="text-xs font-bold tracking-[.18em] text-amber-300">PRIMEKITS STUDIO</p>
-              <h1 className="mt-4 text-4xl font-black leading-[1.04] tracking-tight sm:text-5xl">Everyday apparel, selected with a sharper eye.</h1>
-              <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">Jerseys, tees, shirts and layers for Bangladesh. Browse the current collection, check your fit, and order on your terms.</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/shop" className="border border-amber-300 bg-amber-300 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-amber-200">Shop the collection</Link>
-                <Link href="/track" className="border border-slate-500 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/5">Track an order</Link>
-              </div>
-            </div>
-            <div className="border-l border-white/15 pl-6 sm:pl-8">
-              <p className="text-xs font-bold tracking-[.16em] text-slate-400">ORDERING WITH PRIMEKITS</p>
-              <dl className="mt-5 grid gap-5 sm:grid-cols-3 md:grid-cols-1">
-                <TrustItem number="01" title="Clear product details" text="See the product, price and available options before checkout." />
-                <TrustItem number="02" title="Cash on Delivery" text="Delivery coverage is confirmed at checkout for your address." />
-                <TrustItem number="03" title="Direct support" text="Get order assistance through our verified support channels." />
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <SectionHeading eyebrow="SHOP BY CATEGORY" title="Find the right layer" href="/categories" />
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {leadCategory ? <CategoryFeature category={leadCategory} featured /> : <CategoryFallback name="Jerseys" featured />}
-            <div className="grid grid-cols-3 gap-4">
-              {supportingCategories.length ? supportingCategories.map((category) => <CategoryFeature key={category.id} category={category} />) : ["T-Shirts", "Shirts", "Hoodies"].map((name) => <CategoryFallback key={name} name={name} />)}
-            </div>
-          </div>
-        </section>
-
-        <ProductSection eyebrow="CURRENT EDIT" title="Featured pieces" href="/shop?featured=1" items={(featured.length ? featured : fallback) as never[]} />
-
-        <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="grid border border-slate-200 bg-white md:grid-cols-[.75fr_1.25fr]">
-            <div className="border-b border-slate-200 bg-slate-100 p-7 md:border-b-0 md:border-r sm:p-9">
-              <p className="text-xs font-bold tracking-[.16em] text-slate-500">BUY WITH CLARITY</p>
-              <h2 className="mt-3 text-2xl font-black tracking-tight">Fit, delivery and support before you order.</h2>
-              <Link href="/faq" className="mt-6 inline-block border-b-2 border-slate-950 pb-1 text-sm font-bold text-slate-950">Read the ordering guide</Link>
-            </div>
-            <div className="grid divide-y divide-slate-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              <InfoItem title="Size guidance" text="Use the size chart available on each product page before selecting your option." />
-              <InfoItem title="Order updates" text="Track your submitted order and contact us if you need help with a delivery." />
-              <InfoItem title="Returns" text="Review the return policy for eligibility and the steps to request assistance." />
-            </div>
-          </div>
-        </section>
-
-        <ProductSection eyebrow="POPULAR NOW" title="Best sellers" href="/shop?best=1" items={(best.length ? best : fallback) as never[]} />
-        <ProductSection eyebrow="NEW TO THE SHOP" title="Recent arrivals" href="/shop?new=1" items={(fresh.length ? fresh : fallback) as never[]} />
-      </main>
-      <SiteFooter settings={settings as never} />
-    </div>
-  );
+  let all: (typeof products.$inferSelect)[] = []; let cats: (typeof categories.$inferSelect)[] = [];
+  try { [all, cats] = await Promise.all([
+    db.select().from(products).where(eq(products.status, "published")).orderBy(desc(products.createdAt)).limit(40),
+    db.select().from(categories).where(eq(categories.isActive, true)).orderBy(categories.sortOrder).limit(12),
+  ]); } catch { /* The storefront remains available during database setup. */ }
+  const featured = all.filter((p) => p.isFeatured).slice(0, 4); const best = all.filter((p) => p.isBestSeller).slice(0, 8);
+  const catalog = (best.length ? best : featured.length ? featured : all).slice(0, 8); const heroProducts = (featured.length ? featured : all).slice(0, 2);
+  return <div className="min-h-screen bg-[#f7f7f5] text-slate-950"><SiteHeader settings={settings as never} /><main>
+    <section className="relative isolate overflow-hidden bg-[#071526] text-white"><div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_85%_15%,#fbbf24,transparent_22%),radial-gradient(circle_at_10%_90%,#0e7490,transparent_28%)]" />
+      <div className="relative mx-auto grid max-w-7xl gap-9 px-4 py-14 sm:px-6 md:grid-cols-[.95fr_1.05fr] md:py-20 lg:px-8"><div className="self-center"><p className="text-xs font-black tracking-[.26em] text-amber-300">PRIMEKITS JERSEY CLUB</p><h1 className="mt-5 max-w-xl text-5xl font-black leading-[.92] tracking-[-.06em] sm:text-6xl">Wear the <span className="text-amber-300">game.</span><br />Own the moment.</h1><p className="mt-6 max-w-lg text-base leading-7 text-slate-300">Premium jerseys curated for match day, streetwear and your whole team. Clean fits, confident details, and delivery across Bangladesh.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/shop" className="bg-amber-300 px-6 py-3.5 text-sm font-black text-slate-950 transition hover:bg-amber-200">Shop jerseys</Link><Link href="#custom-team" className="border border-white/35 px-6 py-3.5 text-sm font-black text-white hover:bg-white/10">Custom team order</Link></div><div className="mt-10 grid max-w-md grid-cols-3 border-t border-white/15 pt-5 text-xs"><Metric value="S—XL" label="Ready sizes" /><Metric value="COD" label="Across BD" /><Metric value="24/7" label="Fast support" /></div></div>
+        <div className="grid grid-cols-2 gap-3 self-end">{heroProducts.length ? heroProducts.map((p, index) => <Link key={p.id} href={`/product/${p.slug}`} className={`group relative overflow-hidden border border-white/15 bg-white/5 ${index === 0 ? "mt-8" : "mb-8"}`}><div className="aspect-[3/4] p-3"><SafeImage src={p.thumbnail || p.images?.[0] || ""} alt={p.name} className="h-full w-full object-contain transition duration-500 group-hover:scale-105" fallback="PrimeKits jersey" /></div><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 p-4"><p className="text-xs font-bold text-amber-300">FEATURED DROP</p><p className="mt-1 line-clamp-2 text-sm font-black">{p.name}</p></div></Link>) : <div className="col-span-2 flex aspect-[16/9] items-center justify-center border border-dashed border-white/25 text-sm text-slate-300">Your latest jersey collection will appear here.</div>}</div>
+      </div></section>
+    <section className="border-b border-slate-200 bg-white"><div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-slate-200 px-4 sm:grid-cols-4 sm:divide-y-0 sm:px-6 lg:px-8"><Trust title="Premium quality" text="Match-ready materials" /><Trust title="Secure checkout" text="bKash · Nagad · COD" /><Trust title="Fast support" text="Help when you need it" /><Trust title="Bangladesh delivery" text="Cash on delivery available" /></div></section>
+    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-black tracking-[.18em] text-sky-700">SHOP BY MOOD</p><h2 className="mt-2 text-3xl font-black tracking-tight">Find your kit</h2></div><Link href="/categories" className="text-sm font-bold underline underline-offset-4">View all categories</Link></div><div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">{[...cats.slice(0, 5), ...Array(Math.max(0, 5 - cats.length)).fill(null)].slice(0, 5).map((cat, i) => <Link key={cat?.slug || i} href={cat ? `/category/${cat.slug}` : "/shop"} className="group relative min-h-32 overflow-hidden bg-slate-900 p-4 text-white"><SafeImage src={cat?.image || (all[i]?.thumbnail || all[i]?.images?.[0] || "")} alt="" className="absolute inset-0 h-full w-full object-cover opacity-45 transition duration-500 group-hover:scale-110" fallback="" /><div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent" /><span className="relative block pt-14 text-sm font-black">{cat?.name || ["Football Jerseys", "Cricket Jerseys", "Custom Team Jerseys", "Best Sellers", "New Arrivals"][i]}</span></Link>)}</div></section>
+    <section className="bg-white py-12"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black tracking-[.18em] text-sky-700">THE COLLECTION</p><h2 className="mt-2 text-3xl font-black tracking-tight">Fresh jerseys. Easy shopping.</h2><p className="mt-2 text-sm text-slate-500">Choose your size from S, M, L or XL and view every detail before ordering.</p></div><Link href="/shop" className="bg-slate-950 px-5 py-3 text-sm font-bold text-white">Browse all jerseys</Link></div><div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{catalog.map((p) => <ProductCard key={p.id} p={p} />)}</div>{catalog.length === 0 ? <div className="mt-8 border border-dashed p-10 text-center text-sm text-slate-500">Products will appear here as soon as they are published.</div> : null}</div></section>
+    <section id="custom-team" className="bg-[#e8f0f3]"><div className="mx-auto grid max-w-7xl gap-6 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] md:items-center lg:px-8"><div><p className="text-xs font-black tracking-[.18em] text-sky-700">YOUR CREST. YOUR COLOURS.</p><h2 className="mt-3 text-3xl font-black tracking-tight">Kits made for the whole team.</h2><p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">Planning a tournament, club season or corporate event? Let&apos;s make your team look united from kickoff to final whistle.</p></div><Link href="/contact" className="w-fit bg-slate-950 px-6 py-3.5 text-sm font-black text-white">Talk to our team</Link></div></section>
+  </main><SiteFooter settings={settings as never} /></div>;
 }
-
-function SectionHeading({ eyebrow, title, href }: { eyebrow: string; title: string; href: string }) {
-  return <div className="flex items-end justify-between gap-4 border-b border-slate-300 pb-4"><div><p className="text-[11px] font-bold tracking-[.18em] text-slate-500">{eyebrow}</p><h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">{title}</h2></div><Link href={href} className="shrink-0 text-sm font-bold text-slate-700 underline underline-offset-4 hover:text-slate-950">View all</Link></div>;
-}
-
-function ProductSection({ eyebrow, title, href, items }: { eyebrow: string; title: string; href: string; items: { name: string; slug: string; thumbnail?: string | null; images?: string[]; sellingPrice: number | string; discountPrice?: number | string | null; isNewArrival?: boolean; isBestSeller?: boolean }[] }) {
-  if (!items.length) return null;
-  return <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"><SectionHeading eyebrow={eyebrow} title={title} href={href} /><div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{items.map((product, index) => <ProductCard key={`${product.slug}-${index}`} p={product as never} />)}</div></section>;
-}
-
-function CategoryFeature({ category, featured = false }: { category: typeof categories.$inferSelect; featured?: boolean }) {
-  return <Link href={`/category/${category.slug}`} className={`group relative overflow-hidden border border-slate-200 bg-slate-200 ${featured ? "aspect-[16/10]" : "aspect-[4/5]"}`}><SafeImage src={category.image} alt={category.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" fallback={category.name} /><div className="absolute inset-x-0 bottom-0 bg-slate-950/85 p-4 text-white"><span className="block text-xs font-bold tracking-[.14em] text-amber-300">SHOP</span><span className="mt-1 block text-lg font-black">{category.name}</span></div></Link>;
-}
-
-function CategoryFallback({ name, featured = false }: { name: string; featured?: boolean }) {
-  return <Link href="/shop" className={`flex items-end border border-slate-300 bg-slate-200 p-4 text-lg font-black text-slate-900 ${featured ? "aspect-[16/10]" : "aspect-[4/5]"}`}>{name}</Link>;
-}
-
-function TrustItem({ number, title, text }: { number: string; title: string; text: string }) { return <div className="grid grid-cols-[28px_1fr] gap-3"><dt className="text-xs font-bold text-amber-300">{number}</dt><dd><div className="text-sm font-bold text-white">{title}</div><p className="mt-1 text-xs leading-5 text-slate-400">{text}</p></dd></div>; }
-function InfoItem({ title, text }: { title: string; text: string }) { return <div className="p-6"><h3 className="text-sm font-bold text-slate-950">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{text}</p></div>; }
+function Metric({ value, label }: { value: string; label: string }) { return <div><div className="text-lg font-black text-white">{value}</div><div className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">{label}</div></div>; }
+function Trust({ title, text }: { title: string; text: string }) { return <div className="p-4 sm:p-5"><div className="text-sm font-black">{title}</div><div className="mt-1 text-xs text-slate-500">{text}</div></div>; }

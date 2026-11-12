@@ -14,6 +14,7 @@ const NAV = [
   { label: "Customers", href: "/admin/customers", code: "CU" },
   { label: "Reviews", href: "/admin/reviews", code: "RV" },
   { label: "Promotions", href: "/admin/coupons", code: "PM" },
+  { label: "Customer rewards", href: "/admin/rewards", code: "RW" },
   { label: "Couriers", href: "/admin/couriers", code: "CR" },
   { label: "Purchases", href: "/admin/purchases", code: "PU" },
   { label: "Expenses", href: "/admin/expenses", code: "EX" },

@@ -157,6 +157,9 @@ export function ProductCard({ p }: { p: { name: string; slug: string; thumbnail?
           <span className="text-[15px] font-extrabold text-slate-900">BDT {price.toLocaleString("en-IN")}</span>
           {dp && dp > 0 && dp < sp ? <span className="text-xs text-slate-400 line-through">BDT {sp.toLocaleString("en-IN")}</span> : null}
         </div>
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-500">
+          <span>S · M · L · XL</span><span className="text-slate-900 group-hover:underline">View details →</span>
+        </div>
       </div>
     </Link>
   );
