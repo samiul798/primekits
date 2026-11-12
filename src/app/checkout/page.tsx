@@ -107,19 +107,21 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader settings={settings as unknown as never} />
-      <div className="mx-auto max-w-5xl px-4 py-6">
-        <h1 className="text-2xl font-black">Checkout</h1>
-        <p className="text-sm text-slate-500">Fill delivery info → Place order → Confirm on WhatsApp</p>
+      <div className="checkout-shell mx-auto max-w-6xl px-4 py-8 sm:py-10">
+        <div className="border-b border-slate-200 pb-5">
+          <p className="text-[11px] font-bold tracking-[.16em] text-sky-700">SECURE CHECKOUT</p>
+          <div className="mt-2 flex flex-wrap items-end justify-between gap-3"><div><h1 className="text-3xl font-black tracking-tight">Complete your order</h1><p className="mt-1 text-sm text-slate-600">Enter your delivery details and choose a payment method.</p></div><Link href="/cart" className="text-sm font-bold text-slate-700 underline underline-offset-4">Back to cart</Link></div>
+        </div>
         {items.length === 0 ? (
           <div className="mt-6 rounded-2xl border bg-white p-10 text-center">
             <div className="font-extrabold">Cart is empty</div>
-            <Link href="/shop" className="mt-3 inline-block rounded-full bg-slate-900 px-5 py-2 text-sm font-bold text-white">Go to Shop</Link>
+            <Link href="/shop" className="mt-3 inline-block border border-slate-900 bg-slate-900 px-5 py-2 text-sm font-bold text-white">Go to Shop</Link>
           </div>
         ) : (
-          <form onSubmit={submit} className="mt-4 grid gap-4 md:grid-cols-[1fr_320px]">
-            <div className="space-y-4">
-              <div className="rounded-2xl border bg-white p-4">
-                <div className="font-extrabold">1. Contact Information</div>
+          <form onSubmit={submit} className="checkout-form mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="space-y-5">
+              <div className="checkout-section border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="checkout-section-heading"><span>01</span><div><div className="font-extrabold">Contact information</div><p>Your name and the best number to reach you.</p></div></div>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <label className="sm:col-span-2">Full Name *
                     <input required value={form.customerName} onChange={(e) => set("customerName", e.target.value)} placeholder="e.g. Tanvir Hasan" className="mt-1 w-full rounded-xl border px-3 py-2.5" />
@@ -135,8 +137,8 @@ export default function CheckoutPage() {
                   </label>
                 </div>
               </div>
-              <div className="rounded-2xl border bg-white p-4">
-                <div className="font-extrabold">2. Delivery Address</div>
+              <div className="checkout-section border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="checkout-section-heading"><span>02</span><div><div className="font-extrabold">Delivery address</div><p>Use the address where you want the order delivered.</p></div></div>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <label className="sm:col-span-2">Full Address *
                     <textarea required value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="House, Road, Area…" rows={2} className="mt-1 w-full rounded-xl border px-3 py-2.5" />
@@ -162,7 +164,7 @@ export default function CheckoutPage() {
                         ["sub_dhaka", `Sub-Dhaka (৳${settings.deliverySubDhaka})`],
                         ["outside_dhaka", `Outside Dhaka (৳${settings.deliveryOutsideDhaka})`],
                       ].map(([v, l]) => (
-                        <button type="button" key={v} onClick={() => set("deliveryZone", v)} className={`rounded-xl border px-2 py-2 text-xs font-bold ${form.deliveryZone === v ? "border-slate-900 bg-slate-900 text-white" : "bg-white"}`}>{l}</button>
+                        <button type="button" key={v} onClick={() => set("deliveryZone", v)} className={`checkout-choice border px-2 py-3 text-xs font-bold ${form.deliveryZone === v ? "border-sky-800 bg-sky-800 text-white" : "border-slate-200 bg-white text-slate-700"}`}>{l}</button>
                       ))}
                     </div>
                   </label>
@@ -171,21 +173,21 @@ export default function CheckoutPage() {
                   </label>
                 </div>
               </div>
-              <div className="rounded-2xl border bg-white p-4">
-                <div className="font-extrabold">3. Payment Method</div>
+              <div className="checkout-section border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                <div className="checkout-section-heading"><span>03</span><div><div className="font-extrabold">Payment method</div><p>Select your preferred way to pay.</p></div></div>
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {PAYMENT_METHODS.map(({ value, label }) => (
-                    <button type="button" key={value} onClick={() => set("paymentMethod", value)} className={`rounded-xl border px-3 py-2.5 text-sm font-bold ${form.paymentMethod === value ? "border-slate-900 bg-slate-900 text-white" : "bg-white"}`}>{label}</button>
+                    <button type="button" key={value} onClick={() => set("paymentMethod", value)} className={`checkout-choice border px-3 py-3 text-sm font-bold ${form.paymentMethod === value ? "border-sky-800 bg-sky-800 text-white" : "border-slate-200 bg-white text-slate-700"}`}>{label}</button>
                   ))}
                 </div>
                 <label className="mt-3 block">Coupon Code (if any)
-                  <input value={form.couponCode} onChange={(e) => set("couponCode", e.target.value.toUpperCase())} placeholder="WELCOME50" className="mt-1 w-full rounded-xl border px-3 py-2.5 uppercase" />
+                  <input value={form.couponCode} onChange={(e) => set("couponCode", e.target.value.toUpperCase())} placeholder="Enter a code" className="mt-1 w-full rounded-xl border px-3 py-2.5 uppercase" />
                 </label>
               </div>
               {error ? <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">{error}</div> : null}
             </div>
-            <div className="h-fit rounded-2xl border bg-white p-4 md:sticky md:top-24">
-              <div className="font-extrabold">Order Summary</div>
+            <aside className="checkout-summary h-fit border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-24 sm:p-6">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4"><div><p className="text-[11px] font-bold tracking-[.14em] text-sky-700">YOUR ORDER</p><div className="mt-1 font-extrabold">Order summary</div></div><span className="text-xs text-slate-500">{items.length} item{items.length === 1 ? "" : "s"}</span></div>
               <div className="mt-2 max-h-64 space-y-2 overflow-y-auto">
                 {items.map((i) => (
                   <div key={`${i.productId}-${i.variantId}`} className="flex gap-2 text-xs">
@@ -207,16 +209,16 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-3 space-y-1 border-t pt-2 text-sm">
-                <div className="flex justify-between"><span>Subtotal</span><b>৳{subtotal.toLocaleString("en-IN")}</b></div>
-                <div className="flex justify-between"><span>Delivery</span><b>৳{deliveryCharge.toLocaleString("en-IN")}</b></div>
-                <div className="flex justify-between text-base font-black"><span>Total</span><span>৳{(subtotal + deliveryCharge).toLocaleString("en-IN")}</span></div>
+              <div className="mt-5 space-y-2 border-t border-slate-200 pt-4 text-sm">
+                <div className="flex justify-between"><span>Subtotal</span><b>BDT {subtotal.toLocaleString("en-IN")}</b></div>
+                <div className="flex justify-between"><span>Delivery</span><b>BDT {deliveryCharge.toLocaleString("en-IN")}</b></div>
+                <div className="flex justify-between border-t border-slate-200 pt-3 text-lg font-black"><span>Total</span><span>BDT {(subtotal + deliveryCharge).toLocaleString("en-IN")}</span></div>
               </div>
-              <button disabled={loading} className="mt-3 w-full rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-emerald-500 disabled:opacity-50">
+              <button disabled={loading} className="mt-5 w-full bg-emerald-700 px-4 py-4 text-sm font-extrabold text-white hover:bg-emerald-600 disabled:opacity-50">
                 {loading ? "Placing order…" : "Place order via WhatsApp"}
               </button>
-              <p className="mt-2 text-[11px] text-slate-500">By ordering you agree to our Terms & Return Policy. Stock & price are revalidated on the server.</p>
-            </div>
+              <p className="mt-3 text-[11px] leading-5 text-slate-500">By ordering, you agree to our Terms and Return Policy. Stock and price are revalidated on the server.</p>
+            </aside>
           </form>
         )}
       </div>

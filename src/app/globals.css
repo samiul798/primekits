@@ -85,6 +85,72 @@ input, select, textarea {
   overflow: hidden;
 }
 
+/* Checkout: deliberately calm, step-led form for a low-friction purchase. */
+.checkout-shell {
+  max-width: 1180px;
+}
+
+.checkout-section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.checkout-section-heading > span {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  background: #e0f2fe;
+  color: #075985;
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.checkout-section-heading p {
+  margin-top: .15rem;
+  font-size: .75rem;
+  line-height: 1.3;
+  color: #64748b;
+}
+
+.checkout-section label {
+  color: #334155;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.checkout-section input,
+.checkout-section select,
+.checkout-section textarea {
+  border-color: #cbd5e1;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.checkout-section input:focus,
+.checkout-section select:focus,
+.checkout-section textarea:focus {
+  outline: 2px solid rgb(14 116 144 / 28%);
+  outline-offset: 1px;
+  border-color: #0e7490;
+}
+
+.checkout-choice {
+  min-height: 44px;
+  border-radius: 0;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+.checkout-summary {
+  border-top: 4px solid #0e7490;
+}
+
 .product-reviews input,
 .product-reviews select,
 .product-reviews textarea {
