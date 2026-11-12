@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
@@ -155,6 +155,8 @@ export default function ProductPage() {
   const [error, setError] = useState("");
   const [imgIdx, setImgIdx] = useState(0);
   const [zoom, setZoom] = useState(false);
+  const [viewer, setViewer] = useState(false);
+  const touchStart = useRef<number | null>(null);
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(1);
   const [msg, setMsg] = useState("");
@@ -192,6 +194,17 @@ export default function ProductPage() {
       }
     })();
   }, [params.slug]);
+
+  useEffect(() => {
+    if (!viewer) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setViewer(false);
+      if (event.key === "ArrowRight") setImgIdx((i) => images.length ? (i + 1) % images.length : 0);
+      if (event.key === "ArrowLeft") setImgIdx((i) => images.length ? (i - 1 + images.length) % images.length : 0);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [viewer, product?.images?.length, product?.thumbnail]);
 
   if (loading) return <div className="p-10 text-center">Loading product…</div>;
   if (error || !product) {
@@ -273,7 +286,9 @@ export default function ProductPage() {
           <div className="product-gallery">
             <div
               className="product-media group relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-slate-200 bg-white"
-              onClick={() => setZoom((z) => !z)}
+              onClick={() => setViewer(true)}
+              onTouchStart={(e) => { touchStart.current = e.touches[0]?.clientX ?? null; }}
+              onTouchEnd={(e) => { const start = touchStart.current; const end = e.changedTouches[0]?.clientX; if (start != null && end != null && Math.abs(start - end) > 45 && images.length > 1) setImgIdx((i) => start > end ? (i + 1) % images.length : (i - 1 + images.length) % images.length); touchStart.current = null; }}
             >
               {images[imgIdx] ? (
                  
@@ -286,6 +301,8 @@ export default function ProductPage() {
                   SAVE BDT {(basePrice - unitPrice).toLocaleString("en-IN")}
                 </span>
               ) : null}
+              {images.length > 1 ? <><button type="button" aria-label="Previous image" onClick={(e) => { e.stopPropagation(); setImgIdx((i) => (i - 1 + images.length) % images.length); }} className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 px-3 py-2 text-sm font-black text-slate-900 shadow hover:bg-white">←</button><button type="button" aria-label="Next image" onClick={(e) => { e.stopPropagation(); setImgIdx((i) => (i + 1) % images.length); }} className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 px-3 py-2 text-sm font-black text-slate-900 shadow hover:bg-white">→</button></> : null}
+              <span className="absolute bottom-3 right-3 bg-slate-950/80 px-2 py-1 text-[10px] font-bold text-white">Click to expand{images.length > 1 ? ` · ${imgIdx + 1}/${images.length}` : ""}</span>
             </div>
             {images.length > 1 ? (
               <div className="mt-3 flex gap-2 overflow-x-auto">
@@ -481,6 +498,7 @@ export default function ProductPage() {
         ) : null}
       </div>
       <SiteFooter settings={settings as never} />
+      {viewer ? <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 p-4" role="dialog" aria-modal="true" aria-label={`${product.name} image viewer`} onClick={() => setViewer(false)}><button type="button" onClick={() => setViewer(false)} className="absolute right-5 top-5 z-10 border border-white/30 px-4 py-2 text-sm font-bold text-white">Close ×</button>{images[imgIdx] ? <SafeImage src={images[imgIdx]} alt={`${product.name} image ${imgIdx + 1}`} className="max-h-[88vh] max-w-[92vw] object-contain" fallback="Image unavailable" /> : null}{images.length > 1 ? <><button type="button" onClick={(e) => { e.stopPropagation(); setImgIdx((i) => (i - 1 + images.length) % images.length); }} className="absolute left-4 top-1/2 -translate-y-1/2 border border-white/40 bg-black/30 px-4 py-3 text-xl text-white">←</button><button type="button" onClick={(e) => { e.stopPropagation(); setImgIdx((i) => (i + 1) % images.length); }} className="absolute right-4 top-1/2 -translate-y-1/2 border border-white/40 bg-black/30 px-4 py-3 text-xl text-white">→</button></> : null}</div> : null}
       {/* size chart modal with image + measurement table */}
       <SizeChartModal
         open={showSizeChart}
