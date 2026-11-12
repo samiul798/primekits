@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageSkeleton } from "@/components/skeleton";
 
 export default function AdminProfit() {
   const [from, setFrom] = useState("");
@@ -84,7 +85,7 @@ export default function AdminProfit() {
           </div>
         </>
       ) : loading ? (
-        <div>Loading…</div>
+        <PageSkeleton cards={6} />
       ) : (
         <div className="rounded-2xl border bg-white p-8 text-center text-slate-400">No report data available.</div>
       )}

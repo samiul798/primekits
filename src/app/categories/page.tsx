@@ -27,9 +27,9 @@ export default async function CategoriesPage() {
             {cats.map((c) => (
               <Link key={c.id} href={`/category/${c.slug}`} className="overflow-hidden rounded-2xl border bg-white hover:shadow-lg">
                 {c.image ? (
-                  <SafeImage src={c.image} alt={c.name} className="h-44 w-full bg-slate-100 object-cover" fallback="👕" />
+                  <SafeImage src={c.image} alt={c.name} className="h-44 w-full bg-slate-100 object-cover" fallback="Image unavailable" />
                 ) : (
-                  <div className="flex h-44 items-center justify-center bg-slate-100 text-4xl">👕</div>
+                  <div className="flex h-44 items-center justify-center bg-slate-100 p-4 text-center text-sm font-semibold text-slate-500">Image unavailable</div>
                 )}
                 <div className="p-3">
                   <div className="font-extrabold">{c.name}</div>

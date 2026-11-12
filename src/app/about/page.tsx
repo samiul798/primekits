@@ -3,7 +3,7 @@ import { InfoPage } from "@/components/info";
 export default async function AboutPage() {
   return (
     <InfoPage title="About PrimeKits Studio">
-      <p><b>PrimeKits Studio</b> is a premium apparel brand based in Dhaka, Bangladesh — specializing in Jersey, T-Shirt, Shirt, Hoodie and High-Neck collections.</p>
+      <p><b>PrimeKits Studio</b> is an apparel brand based in Dhaka, Bangladesh, specializing in jersey, T-shirt, shirt, hoodie and high-neck collections.</p>
       <p>We focus on export-quality fabrics, honest pricing in Bangladeshi Taka (৳), Cash on Delivery all over Bangladesh, and fast WhatsApp support.</p>
       <p><b>Why shop with us?</b></p>
       <ul className="list-disc pl-5">

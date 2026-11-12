@@ -23,7 +23,7 @@ export function StickyCartBar() {
         href="/cart"
         className="flex items-center justify-between rounded-2xl bg-slate-900 px-5 py-3 font-bold text-white"
       >
-        <span>🛒 View Cart ({count})</span>
+        <span>View Cart ({count})</span>
         <span>৳{subtotal.toLocaleString("en-IN")} →</span>
       </Link>
     </div>

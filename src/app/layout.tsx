@@ -5,11 +5,11 @@ import { CartProvider } from "@/components/CartProvider";
 
 export const metadata: Metadata = {
   title: {
-    default: "PrimeKits Studio — Premium Apparel in Bangladesh",
+    default: "PrimeKits Studio | Apparel in Bangladesh",
     template: "%s | PrimeKits Studio",
   },
   description:
-    "PrimeKits Studio — Premium Jersey, T-Shirt, Shirt, Hoodie & High-Neck in Bangladesh. Cash on Delivery, WhatsApp order confirmation.",
+    "PrimeKits Studio sells jerseys, T-shirts, shirts, hoodies and high-necks in Bangladesh. Cash on Delivery and WhatsApp order confirmation.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

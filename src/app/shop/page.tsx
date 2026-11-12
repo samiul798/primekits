@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
 import { StickyCartBar } from "@/components/home-client";
+import { ProductGridSkeleton } from "@/components/skeleton";
 
 type P = {
   id: string;
@@ -126,11 +127,7 @@ function ShopInner() {
         </div>
 
         {loading ? (
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-64 animate-pulse rounded-2xl bg-slate-200" />
-            ))}
-          </div>
+          <div className="mt-8"><ProductGridSkeleton /></div>
         ) : items.length === 0 ? (
           <div className="mt-10 rounded-2xl border bg-white p-10 text-center">
             <div className="text-4xl">🔍</div>

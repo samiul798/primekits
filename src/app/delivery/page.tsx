@@ -10,7 +10,7 @@ export default async function DeliveryPage() {
         <li>Outside Dhaka: ৳130 (2–4 days)</li>
       </ul>
       <p>We deliver via Steadfast, Pathao, RedX, Paperfly, Sundarban & SA Paribahan depending on your area.</p>
-      <p>Please keep your phone switched on — our courier will call before delivery. Check the product in front of the delivery man for any visible defect.</p>
+      <p>Please keep your phone switched on. Our courier will call before delivery. Check the product in front of the delivery person for any visible defect.</p>
       <p>Delivery time may extend during Eid, sales campaigns or bad weather.</p>
     </InfoPage>
   );

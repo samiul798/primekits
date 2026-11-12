@@ -40,21 +40,21 @@ export default async function HomePage() {
           <div className="absolute -right-8 top-20 h-56 w-56 rounded-full border border-white/10" />
           <div className="relative mx-auto grid max-w-7xl gap-6 px-4 pb-9 pt-8 sm:px-6 md:grid-cols-[1.05fr_.95fr] md:items-center md:py-12 lg:px-8">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs font-bold tracking-wide text-amber-200">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-300" /> NEW SEASON · PRIMEKITS STUDIO
+              <div className="inline-flex items-center gap-2 rounded-md border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs font-bold tracking-wide text-amber-200">
+                NEW SEASON · PRIMEKITS STUDIO
               </div>
               <h1 className="mt-4 text-3xl font-black leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
-                Everyday essentials,<br />
-                <span className="text-amber-300">finished exceptionally.</span>
+                Apparel for everyday wear.<br />
+                <span className="text-amber-300">Jerseys, tees, shirts and more.</span>
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
                 Premium jerseys, tees, shirts, hoodies and high-necks with a fit you will reach for every day. Cash on Delivery across Bangladesh.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/shop" className="rounded-full bg-amber-300 px-6 py-3.5 text-sm font-extrabold text-slate-950 transition hover:-translate-y-0.5 hover:bg-amber-200">
+                <Link href="/shop" className="rounded-md bg-amber-300 px-6 py-3.5 text-sm font-extrabold text-slate-950 transition hover:bg-amber-200">
                   Explore the collection <span aria-hidden>→</span>
                 </Link>
-                <Link href="/track" className="rounded-full border border-white/20 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
+                <Link href="/track" className="rounded-md border border-white/20 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">
                   Track your order
                 </Link>
               </div>
@@ -80,15 +80,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-slate-200 px-4 sm:grid-cols-4 sm:divide-y-0 sm:px-6 lg:px-8">
-            <Metric value="Premium" label="Fabric & finishing" />
-            <Metric value="COD" label="All over Bangladesh" />
-            <Metric value="Fast" label="Dispatch & delivery" />
-            <Metric value="Live" label="WhatsApp support" />
-          </div>
-        </section>
-
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           <SectionHeading eyebrow="SHOP YOUR STYLE" title="Categories made for your rotation" href="/categories" />
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -108,7 +99,7 @@ export default async function HomePage() {
               <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">Found your perfect piece?</h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">Add it to your cart, share your delivery details, and confirm effortlessly on WhatsApp.</p>
             </div>
-            <Link href="/shop" className="mt-6 inline-flex rounded-full bg-amber-300 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-amber-200 md:mt-0">Start shopping →</Link>
+            <Link href="/shop" className="mt-6 inline-flex rounded-md bg-amber-300 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-amber-200 md:mt-0">Start shopping →</Link>
           </div>
         </section>
 
@@ -145,6 +136,5 @@ function CategoryCard({ category }: { category: typeof categories.$inferSelect }
 }
 
 function TrustItem({ title, detail }: { title: string; detail: string }) { return <div><div className="font-bold text-white">{title}</div><div className="mt-1 text-[11px] text-slate-400 sm:text-xs">{detail}</div></div>; }
-function Metric({ value, label }: { value: string; label: string }) { return <div className="px-3 py-5 text-center sm:px-6"><div className="text-base font-black text-slate-950">{value}</div><div className="mt-0.5 text-[11px] font-medium text-slate-500">{label}</div></div>; }
-function PromiseCard({ title, text }: { title: string; text: string }) { return <div><div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 font-black text-amber-700">✓</div><h3 className="mt-3 font-extrabold text-slate-950">{title}</h3><p className="mt-1 text-sm leading-6 text-slate-500">{text}</p></div>; }
+function PromiseCard({ title, text }: { title: string; text: string }) { return <div><h3 className="font-extrabold text-slate-950">{title}</h3><p className="mt-1 text-sm leading-6 text-slate-500">{text}</p></div>; }
 function HeroFallback() { return <>{["Jersey", "T-Shirt", "Hoodie", "High-Neck"].map((name, index) => <Link key={name} href="/shop" className={`flex items-end rounded-2xl bg-slate-800 p-4 text-base font-extrabold ${index === 0 ? "col-span-2 aspect-[2/1]" : "aspect-square"}`}>{name}</Link>)}</>; }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
+import { PageSkeleton } from "@/components/skeleton";
 
 type Dash = {
   kpis: Record<string, number>;
@@ -52,7 +53,7 @@ export default function AdminDashboard() {
     } catch (e) { alert(e instanceof Error ? e.message : "Could not release reservations"); }
   }
 
-  if (loading && !data) return <div className="p-8">Loading dashboard…</div>;
+  if (loading && !data) return <PageSkeleton cards={8} />;
   if (error && !data) return <div className="space-y-3 p-8"><div className="font-bold text-rose-700">{error}</div><button onClick={() => load()} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white">Retry dashboard</button></div>;
   const k = data?.kpis || {};
 

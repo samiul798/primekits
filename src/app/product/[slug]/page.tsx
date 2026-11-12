@@ -258,7 +258,6 @@ export default function ProductPage() {
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || "Could not submit review");
       setReviewMsg(data.message || "Review submitted for approval.");
-      if (data.review) setReviews((current) => [data.review, ...current]);
       setRevName("");
       setRevComment("");
     } catch (err) {

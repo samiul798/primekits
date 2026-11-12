@@ -17,12 +17,13 @@ export async function POST(req: NextRequest) {
   if (!p.success) return NextResponse.json({ error: "Invalid review" }, { status: 400 });
   const product = await db.select({ id: products.id }).from(products).where(eq(products.id, p.data.productId)).limit(1);
   if (!product.length) return NextResponse.json({ error: "Product not found" }, { status: 404 });
-  const created = await db.insert(reviews).values({
+  await db.insert(reviews).values({
     productId: p.data.productId,
     customerName: p.data.customerName,
     rating: p.data.rating,
     comment: p.data.comment || null,
-    isApproved: true,
-  }).returning({ customerName: reviews.customerName, rating: reviews.rating, comment: reviews.comment });
-  return NextResponse.json({ ok: true, review: created[0], message: "Thanks! Your review is now published." });
+    // Reviews remain private until a store administrator has verified them.
+    isApproved: false,
+  });
+  return NextResponse.json({ ok: true, message: "Thanks. Your review has been submitted for approval." });
 }

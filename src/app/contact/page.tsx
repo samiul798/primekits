@@ -37,10 +37,10 @@ export default function ContactPage() {
         <div className="rounded-2xl border bg-white p-6">
           <h1 className="text-2xl font-black">Contact Us</h1>
           <div className="mt-4 space-y-2 text-sm">
-            <div>📞 Hotline: <b>{settings.phone}</b></div>
-            <div>💬 WhatsApp: <b>{settings.whatsapp}</b></div>
-            <div>📧 Email: <b>{settings.email}</b></div>
-            <div>📍 {settings.address}</div>
+            <div>Hotline: <b>{settings.phone}</b></div>
+            <div>WhatsApp: <b>{settings.whatsapp}</b></div>
+            <div>Email: <b>{settings.email}</b></div>
+            <div>{settings.address}</div>
             <div className="pt-2 text-slate-500">Support hours: 9 AM – 11 PM (Asia/Dhaka), 7 days</div>
           </div>
           {(buildWhatsAppUrl(settings.whatsapp, `Hello ${settings.businessName}! I need help.`) || buildWhatsAppUrl(settings.phone, `Hello ${settings.businessName}! I need help.`)) ? (

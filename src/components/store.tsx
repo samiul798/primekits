@@ -48,14 +48,14 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/search"
-            className="rounded-full border border-slate-200 p-2 text-slate-700 hover:bg-slate-50"
+            className="rounded-md border border-slate-200 p-2 text-slate-700 hover:bg-slate-50"
             aria-label="Search"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
           </Link>
           <Link
             href="/cart"
-            className="relative rounded-full bg-slate-900 p-2.5 text-white hover:bg-slate-800"
+            className="relative rounded-md bg-slate-900 p-2.5 text-white hover:bg-slate-800"
             aria-label="Cart"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -65,7 +65,7 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
               </span>
             ) : null}
           </Link>
-          <Link href="/shop" className="hidden rounded-full bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 hover:bg-amber-300 sm:block">
+          <Link href="/shop" className="hidden rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 hover:bg-amber-300 sm:block">
             Shop Now
           </Link>
         </div>
@@ -141,9 +141,9 @@ export function ProductCard({ p }: { p: { name: string; slug: string; thumbnail?
     <Link href={`/product/${p.slug}`} className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
       <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-slate-100 p-2">
         {img ? (
-          <SafeImage src={img} alt={p.name} className="h-full w-full bg-slate-100 object-contain object-center p-1 transition group-hover:scale-105" fallback="👕" />
+          <SafeImage src={img} alt={p.name} className="h-full w-full bg-slate-100 object-contain object-center p-1 transition group-hover:scale-105" fallback="Image unavailable" />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl">👕</div>
+          <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500">Product image unavailable</div>
         )}
         <div className="absolute left-2 top-2 flex gap-1">
           {p.isNewArrival ? <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-bold text-white">NEW</span> : null}
