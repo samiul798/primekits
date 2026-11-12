@@ -200,7 +200,7 @@ export default function ProductPage() {
         <SiteHeader settings={settings as never} />
         <div className="mx-auto max-w-xl px-4 py-16 text-center">
           <h1 className="mt-2 text-xl font-black">Product not found</h1>
-          <Link href="/shop" className="mt-4 inline-block rounded-full bg-slate-900 px-5 py-2 text-sm font-bold text-white">Back to Shop</Link>
+          <Link href="/shop" className="mt-4 inline-block border border-slate-900 bg-slate-900 px-5 py-2 text-sm font-bold text-white">Back to Shop</Link>
         </div>
         <SiteFooter settings={settings as never} />
       </div>
@@ -269,10 +269,10 @@ export default function ProductPage() {
       <SiteHeader settings={settings as never} />
       <div className="product-shell mx-auto max-w-7xl px-4 py-6">
         <div className="text-xs text-slate-500"><Link href="/">Home</Link> / <Link href="/shop">Shop</Link> / {product.name}</div>
-        <div className="product-top mt-4 grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:gap-8">
+        <div className="product-top mt-5 grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:gap-10">
           <div className="product-gallery">
             <div
-              className="product-media group relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-100 shadow-sm"
+              className="product-media group relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-slate-200 bg-white"
               onClick={() => setZoom((z) => !z)}
             >
               {images[imgIdx] ? (
@@ -282,15 +282,15 @@ export default function ProductPage() {
                 <div className="flex h-full items-center justify-center text-sm font-bold text-slate-500">Product image unavailable</div>
               )}
               {product.discountPrice && product.discountPrice < basePrice ? (
-                <span className="absolute left-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white">
-                  SAVE ৳{(basePrice - unitPrice).toLocaleString("en-IN")}
+                <span className="absolute left-3 top-3 bg-rose-700 px-3 py-1.5 text-[11px] font-bold tracking-wide text-white">
+                  SAVE BDT {(basePrice - unitPrice).toLocaleString("en-IN")}
                 </span>
               ) : null}
             </div>
             {images.length > 1 ? (
               <div className="mt-3 flex gap-2 overflow-x-auto">
                 {images.map((im, i) => (
-                  <button key={i} onClick={() => setImgIdx(i)} className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 ${i === imgIdx ? "border-slate-900" : "border-transparent"}`}>
+                    <button key={i} onClick={() => setImgIdx(i)} className={`h-16 w-16 shrink-0 overflow-hidden border-2 ${i === imgIdx ? "border-slate-900" : "border-transparent"}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={im} alt="" className="h-full w-full object-cover" />
                   </button>
@@ -298,23 +298,24 @@ export default function ProductPage() {
               </div>
             ) : null}
             {!sizes.length ? (
-              <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <div className="mt-4 flex items-center justify-between border border-slate-200 bg-slate-50 p-4">
                 <div><div className="text-sm font-extrabold">Size guide</div><div className="text-xs text-slate-500">See the measurement table before ordering.</div></div>
                 <button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-900 bg-slate-900 px-3 py-2 text-xs font-extrabold text-white">Size chart</button>
               </div>
             ) : null}
           </div>
           <div className="product-info">
-            <h1 className="product-title text-xl font-black sm:text-2xl">{product.name}</h1>
+            <p className="text-[11px] font-bold tracking-[.16em] text-sky-700">{product.brand || "PRIMEKITS STUDIO"}</p>
+            <h1 className="product-title mt-2 text-2xl font-black sm:text-3xl">{product.name}</h1>
             {product.shortDescription ? <p className="mt-1 text-sm text-slate-600">{product.shortDescription}</p> : null}
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="text-2xl font-black">৳{unitPrice.toLocaleString("en-IN")}</span>
-              {unitPrice < basePrice ? <span className="text-sm text-slate-400 line-through">৳{basePrice.toLocaleString("en-IN")}</span> : null}
+              <span className="text-2xl font-black">BDT {unitPrice.toLocaleString("en-IN")}</span>
+              {unitPrice < basePrice ? <span className="text-sm text-slate-400 line-through">BDT {basePrice.toLocaleString("en-IN")}</span> : null}
             </div>
-            <div className="mt-1 text-xs text-slate-500">SKU: {activeVariant?.sku || product.sku} • {product.brand || "PrimeKits"} • {product.material || "Premium fabric"}</div>
+            <div className="mt-2 text-xs text-slate-500">SKU {activeVariant?.sku || product.sku}<span className="mx-2 text-slate-300">|</span>{product.material || "Premium fabric"}</div>
 
             {sizes.length > 0 ? (
-              <div className="product-choices mt-4 rounded-2xl border-2 border-slate-900 bg-white p-3 shadow-sm">
+              <div className="product-choices mt-6 border border-slate-200 bg-white p-5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="text-sm font-extrabold">
                     Size: {size ? <span className="text-slate-900">{size}</span> : <span className="text-rose-600">Select size</span>}
@@ -322,7 +323,7 @@ export default function ProductPage() {
                   <button
                     type="button"
                     onClick={() => setShowSizeChart(true)}
-                    className="flex items-center gap-1 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-extrabold text-slate-800 hover:border-slate-900 hover:bg-slate-900 hover:text-white"
+                    className="border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-800 hover:border-slate-900 hover:bg-slate-900 hover:text-white"
                   >
                     Size chart
                   </button>
@@ -341,9 +342,9 @@ export default function ProductPage() {
                         onClick={() => !soldOut && setSize(s)}
                         disabled={soldOut}
                         title={soldOut ? `${s} — out of stock` : `${s} — ${sizeAvail} pcs available`}
-                        className={`relative min-w-14 rounded-xl border-2 px-4 py-2.5 text-sm font-extrabold transition ${
+                        className={`relative min-w-14 border px-4 py-2.5 text-sm font-extrabold transition ${
                           isSel
-                            ? "border-slate-900 bg-slate-900 text-white shadow"
+                            ? "border-slate-900 bg-slate-900 text-white shadow-sm"
                             : soldOut
                               ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400 line-through"
                               : "border-slate-200 bg-white hover:border-slate-900"
@@ -372,12 +373,12 @@ export default function ProductPage() {
                 {size ? (
                   <SelectedSizeHint size={size} categorySlug={category?.slug} />
                 ) : (
-                  <p className="mt-1 text-[11px] text-slate-400">নিজের গায়ের মাপের সাথে মিলিয়ে সাইজ বেছে নিন — চার্টে ছবিসহ মাপ দেওয়া আছে।</p>
+                  <p className="mt-2 text-[11px] leading-5 text-slate-500">Compare a shirt that fits you well with the size chart before selecting.</p>
                 )}
               </div>
             ) : null}
 
-            <div className="mt-4 rounded-xl bg-slate-50 px-3 py-2 text-sm">
+            <div className="mt-4 border-l-4 border-slate-300 bg-slate-50 px-4 py-3 text-sm">
               {hasVariants ? (
                 activeVariant ? (
                   avail > 0 ? (
@@ -394,27 +395,27 @@ export default function ProductPage() {
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <div className="flex items-center rounded-2xl border">
+              <div className="flex items-center border border-slate-300 bg-white">
                 <button onClick={() => setQty((x) => Math.max(1, x - 1))} className="px-4 py-2 text-lg font-bold">−</button>
                 <span className="min-w-8 text-center font-bold">{qty}</span>
                 <button onClick={() => setQty((x) => Math.min(20, x + 1))} className="px-4 py-2 text-lg font-bold">+</button>
               </div>
-              <span className="text-xs text-slate-500">Tap image to zoom • 100% quality checked</span>
+              <span className="text-xs text-slate-500">Click the image for a closer view.</span>
             </div>
 
             {msg ? <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-sm font-bold">{msg}</div> : null}
 
             <div className="product-actions mt-4 grid grid-cols-2 gap-3">
-              <button onClick={() => handleAdd(false)} disabled={outOfStock} className="rounded-xl border-2 border-slate-900 px-4 py-3 text-sm font-extrabold hover:bg-slate-100 disabled:opacity-40">
+              <button onClick={() => handleAdd(false)} disabled={outOfStock} className="border border-slate-900 px-4 py-3.5 text-sm font-extrabold hover:bg-slate-100 disabled:opacity-40">
                 Add to Cart
               </button>
-              <button onClick={() => handleAdd(true)} disabled={outOfStock} className="rounded-xl bg-amber-400 px-4 py-3 text-sm font-extrabold text-slate-950 hover:bg-amber-300 disabled:opacity-40">
+              <button onClick={() => handleAdd(true)} disabled={outOfStock} className="bg-amber-300 px-4 py-3.5 text-sm font-extrabold text-slate-950 hover:bg-amber-200 disabled:opacity-40">
                 Buy Now
               </button>
             </div>
 
-            <div className="product-assurance mt-4 space-y-2 rounded-2xl bg-slate-100 p-4 text-[13px]">
-              <div><b>Delivery:</b> Inside Dhaka ৳60; outside Dhaka ৳130 (2–4 days)</div>
+            <div className="product-assurance mt-5 grid gap-3 border border-slate-200 bg-slate-50 p-4 text-[13px] sm:grid-cols-3 sm:gap-4">
+              <div><b>Delivery</b><span className="mt-1 block">Inside Dhaka BDT 60; outside Dhaka BDT 130 (2–4 days)</span></div>
               <div><b>Exchange:</b> For a size issue, contact us on WhatsApp within 3 days.</div>
               <div><b>Payment:</b> Cash on Delivery, bKash and Nagad are available.</div>
             </div>
@@ -423,7 +424,7 @@ export default function ProductPage() {
 
         {/* Description */}
         <div className="product-details mt-10 grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 md:col-span-2">
+          <div className="border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
             <h2 className="font-extrabold">Product Description</h2>
             <p className="mt-2 whitespace-pre-line text-sm text-slate-600">{product.description || product.shortDescription || "Premium quality apparel from PrimeKits Studio."}</p>
             {product.features?.length ? (
@@ -432,7 +433,7 @@ export default function ProductPage() {
               </ul>
             ) : null}
           </div>
-          <div className="rounded-2xl border-2 border-slate-900 bg-white p-5">
+          <div className="border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="font-extrabold">Specifications</h2>
             <dl className="mt-2 space-y-1.5 text-sm">
               {Object.entries(product.specifications || {}).map(([k, v]) => (
@@ -445,12 +446,12 @@ export default function ProductPage() {
         </div>
 
         {/* Reviews */}
-        <div className="product-reviews mt-8 rounded-2xl border-2 border-slate-900 bg-white p-5">
+        <div className="product-reviews mt-8 border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-extrabold">Customer Reviews ({reviews.length})</h2>
           {reviews.length === 0 ? <p className="mt-2 text-sm text-slate-500">No reviews yet. Be the first to review!</p> : (
             <div className="mt-3 space-y-3">
               {reviews.map((r, i) => (
-                <div key={i} className="rounded-xl bg-slate-50 p-3 text-sm">
+                <div key={i} className="border-l-2 border-amber-300 bg-slate-50 p-4 text-sm">
                   <div className="font-bold">{r.customerName} <span className="text-amber-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span></div>
                   {r.comment ? <div className="mt-1 text-slate-600">{r.comment}</div> : null}
                 </div>
@@ -458,12 +459,12 @@ export default function ProductPage() {
             </div>
           )}
           <form onSubmit={submitReview} className="mt-4 grid gap-2 sm:grid-cols-2">
-            <input required minLength={2} value={revName} onChange={(e) => setRevName(e.target.value)} placeholder="Your name" className="rounded-xl border px-3 py-2" />
-            <select value={revRating} onChange={(e) => setRevRating(Number(e.target.value))} className="rounded-xl border px-3 py-2">
+            <input required minLength={2} value={revName} onChange={(e) => setRevName(e.target.value)} placeholder="Your name" className="border px-3 py-2" />
+            <select value={revRating} onChange={(e) => setRevRating(Number(e.target.value))} className="border px-3 py-2">
               {[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{n} Star</option>)}
             </select>
-            <textarea value={revComment} onChange={(e) => setRevComment(e.target.value)} placeholder="Your review…" className="rounded-xl border px-3 py-2 sm:col-span-2" rows={3} />
-            <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white sm:col-span-2">Submit Review</button>
+            <textarea value={revComment} onChange={(e) => setRevComment(e.target.value)} placeholder="Your review…" className="border px-3 py-2 sm:col-span-2" rows={3} />
+            <button className="bg-slate-900 px-4 py-3 text-sm font-bold text-white sm:col-span-2">Submit Review</button>
           </form>
           {reviewMsg ? <p className="mt-2 text-sm font-medium text-slate-600">{reviewMsg}</p> : null}
         </div>
@@ -494,8 +495,8 @@ export default function ProductPage() {
       {/* sticky mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-white/95 p-3 backdrop-blur md:hidden">
         <div className="flex gap-2">
-          <button onClick={() => handleAdd(false)} className="flex-1 rounded-2xl border-2 border-slate-900 py-3 text-sm font-extrabold">Add to Cart</button>
-          <button onClick={() => handleAdd(true)} className="flex-1 rounded-2xl bg-amber-400 py-3 text-sm font-extrabold">Buy Now • ৳{(unitPrice * qty).toLocaleString("en-IN")}</button>
+          <button onClick={() => handleAdd(false)} className="flex-1 border border-slate-900 py-3 text-sm font-extrabold">Add to Cart</button>
+          <button onClick={() => handleAdd(true)} className="flex-1 bg-amber-300 py-3 text-sm font-extrabold">Buy now BDT {(unitPrice * qty).toLocaleString("en-IN")}</button>
         </div>
       </div>
     </div>
