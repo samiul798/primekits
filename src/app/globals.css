@@ -181,19 +181,19 @@ input, select, textarea {
    viewing light enough to inspect fabric while grouping decisions in one dark panel. */
 .premium-product-page { background: #edf0eb; }
 .premium-product-page .product-shell { padding-top: 2rem; }
-.premium-product-page .product-media { background: #101516; border-radius: 14px; border-color: #25302d; }
-.premium-product-page .product-info { background: #101516; color: white; padding: clamp(1.25rem, 3vw, 2rem); border-radius: 14px; box-shadow: 0 18px 45px rgb(10 14 14 / 16%); }
-.premium-product-page .product-title { color: #fff; font-size: clamp(1.85rem, 3vw, 2.8rem); }
+.premium-product-page .product-media { background: #fff; border-radius: 14px; border-color: #25302d; }
+.premium-product-page .product-info { background: #fff; color: #0f172a; padding: clamp(1.25rem, 3vw, 2rem); border-radius: 14px; box-shadow: 0 18px 45px rgb(10 14 14 / 12%); }
+.premium-product-page .product-title { color: #0f172a; font-size: clamp(1.85rem, 3vw, 2.8rem); }
 .premium-product-page .product-info .text-slate-600,
 .premium-product-page .product-info .text-slate-500,
-.premium-product-page .product-info .text-slate-700 { color: #b6c0bc; }
+.premium-product-page .product-info .text-slate-700 { color: #475569; }
 .premium-product-page .product-info .bg-white,
-.premium-product-page .product-info .bg-slate-50 { background: #171e1c; }
+.premium-product-page .product-info .bg-slate-50 { background: #f5f7f4; }
 .premium-product-page .product-info .border-slate-200,
-.premium-product-page .product-info .border-slate-300 { border-color: #34413d; }
-.premium-product-page .product-info button:not(.bg-slate-900) { border-color: #43514c; }
-.premium-product-page .product-info .bg-slate-900 { background: #b8ff35; color: #0d1210; }
-.premium-product-page .product-info .text-sky-700 { color: #b8ff35; }
+.premium-product-page .product-info .border-slate-300 { border-color: #cbd5d0; }
+.premium-product-page .product-info button:not(.bg-slate-900) { border-color: #64748b; }
+.premium-product-page .product-info .bg-slate-900 { background: #101516; color: #fff; }
+.premium-product-page .product-info .text-sky-700 { color: #4f7f12; }
 .premium-product-page .product-details,
 .premium-product-page .product-reviews { border-radius: 14px; }
 

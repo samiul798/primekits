@@ -7,7 +7,7 @@ import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
 import { useCart } from "@/components/CartProvider";
 import { getSizeChart, DEFAULT_SIZE_GUIDE_IMAGE } from "@/lib/size-charts";
 import { SafeImage } from "@/components/safe-image";
-import { sortProductSizes } from "@/lib/utils";
+import { PRODUCT_SIZES, sortProductSizes } from "@/lib/utils";
 
 type Variant = {
   id: string;
@@ -313,7 +313,13 @@ export default function ProductPage() {
                   </button>
                 ))}
               </div>
-            ) : null}
+            ) : (
+              <div className="product-choices mt-6 border border-slate-200 bg-white p-5">
+                <div className="flex items-center justify-between gap-2"><div className="text-sm font-extrabold">Size: {size || <span className="text-rose-600">Select size</span>}</div><button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-800">Size chart</button></div>
+                <div className="mt-3 flex flex-wrap gap-2">{PRODUCT_SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={`min-w-14 border px-4 py-2.5 text-sm font-extrabold ${size === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-900"}`}>{s}</button>)}</div>
+                <p className="mt-3 text-[11px] leading-5 text-slate-500">Choose your usual size. This product uses the standard PrimeKits size guide; exact size-level stock is not configured yet.</p>
+              </div>
+            )}
             {!sizes.length ? (
               <div className="mt-4 flex items-center justify-between border border-slate-200 bg-slate-50 p-4">
                 <div><div className="text-sm font-extrabold">Size guide</div><div className="text-xs text-slate-500">See the measurement table before ordering.</div></div>
