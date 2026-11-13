@@ -166,6 +166,45 @@ input, select, textarea {
   border-color: #e2e8f0;
 }
 
+/* PrimeKits fashion system: intentionally compact, high-contrast and shared by
+   storefront cards, the Jersey World and the existing operations panel. */
+.storefront h1, .storefront h2 { letter-spacing: -.045em; }
+.storefront .bg-amber-300 { background-color: #b8ff35; }
+.storefront .text-amber-300 { color: #b8ff35; }
+.storefront .text-sky-700 { color: #4f7f12; }
+.storefront .bg-slate-950 { background-color: #101516; }
+.storefront .border-slate-200 { border-color: #dce0da; }
+.premium-product-card .bg-slate-100 { background: #1a1f20; }
+.premium-product-card .text-slate-400 { color: #7f8986; }
+
+.admin-shell input, .admin-shell select, .admin-shell textarea {
+  background: #0c1010;
+  border-color: #2e3936;
+  color: #f8fafc;
+}
+.admin-shell main > .rounded-2xl,
+.admin-shell main .jersey-gallery-admin .bg-white {
+  background: #111716;
+  border-color: rgb(255 255 255 / 10%);
+  color: #f8fafc;
+}
+.admin-shell .jersey-gallery-admin .text-slate-600,
+.admin-shell .jersey-gallery-admin .text-slate-500 {
+  color: #9eaaa5;
+}
+.admin-shell .jersey-gallery-admin .text-emerald-700 { color: #b8ff35; }
+.admin-shell .jersey-gallery-admin .border { border-color: rgb(255 255 255 / 12%); }
+.admin-shell .jersey-gallery-admin .bg-slate-50 { background: #0c1010; }
+.admin-shell .jersey-gallery-admin .bg-emerald-50 { background: rgb(184 255 53 / 10%); }
+.admin-shell .jersey-gallery-admin .border-emerald-500 { border-color: #b8ff35; }
+.admin-shell .jersey-gallery-admin button:not(:disabled):hover { border-color: #b8ff35; }
+.admin-shell .jersey-gallery-admin .border-rose-200 { border-color: rgb(251 113 133 / 40%); }
+
+@media (max-width: 767px) {
+  .store-header nav { scrollbar-width: none; }
+  .storefront h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
+}
+
 @media (min-width: 700px) {
   .product-top {
     grid-template-columns: minmax(0, 1.05fr) minmax(310px, .95fr);

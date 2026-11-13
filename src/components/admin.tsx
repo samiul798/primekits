@@ -47,8 +47,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   if (path === "/admin/login") return <>{children}</>;
 
   return (
-    <div className="min-h-screen bg-[#f4f6f8] text-slate-950">
-      <header className="sticky top-0 z-40 border-b-4 border-amber-400 bg-[#102238] text-white">
+    <div className="admin-shell min-h-screen bg-[#090d0d] text-slate-100">
+      <header className="sticky top-0 z-40 border-b border-lime-300/50 bg-[#0d1111] text-white">
         <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6">
           <button onClick={() => setOpen((value) => !value)} className="border border-white/30 px-3 py-2 text-xs font-bold md:hidden" aria-label="Toggle navigation">Menu</button>
           <Link href="/admin" className="font-black tracking-tight">PrimeKits <span className="text-amber-300">Operations</span></Link>
@@ -63,12 +63,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </header>
       <div className="mx-auto flex max-w-[1440px] gap-5 px-4 py-5 sm:px-6">
         <aside className={`${open ? "block" : "hidden"} w-60 shrink-0 md:block`}>
-          <nav className="sticky top-20 border border-slate-200 bg-white p-2 shadow-sm">
-            <p className="border-b border-slate-100 px-3 pb-3 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
+          <nav className="sticky top-20 border border-white/10 bg-[#111716] p-2 shadow-sm">
+            <p className="border-b border-white/10 px-3 pb-3 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
             <div className="space-y-0.5">
               {NAV.map((item, index) => {
                 const active = path === item.href || (item.href !== "/admin" && path.startsWith(item.href));
-                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-amber-400 bg-amber-50 text-slate-950" : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className={`flex h-6 w-6 items-center justify-center text-[9px] font-black ${NAV_TONES[index % NAV_TONES.length]}`}>{item.code}</span>{item.label}</Link>;
+                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-lime-300 bg-lime-300/15 text-lime-300" : "border-transparent text-slate-400 hover:bg-white/5 hover:text-white"}`}><span className={`flex h-6 w-6 items-center justify-center rounded text-[9px] font-black ${active ? "bg-lime-300 text-slate-950" : NAV_TONES[index % NAV_TONES.length]}`}>{item.code}</span>{item.label}</Link>;
               })}
             </div>
           </nav>

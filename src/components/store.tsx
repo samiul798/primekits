@@ -16,9 +16,9 @@ export type StoreSettings = {
 
 export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; cartCount?: number }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="store-header sticky top-0 z-40 border-b border-white/10 bg-[#090c0d]/95 text-white backdrop-blur">
       {settings.announcement ? (
-        <div className="bg-slate-900 px-4 py-1.5 text-center text-[12px] font-medium text-amber-300">
+        <div className="bg-lime-300 px-4 py-1.5 text-center text-[12px] font-black text-slate-950">
           {settings.announcement}
         </div>
       ) : null}
@@ -27,50 +27,46 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
           {settings.logo ? (
             <SafeImage src={settings.logo} alt={settings.businessName} className="h-9 w-9 rounded-xl bg-slate-100 object-cover" fallback="P" />
           ) : (
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-lg font-black text-amber-400">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-lime-300 text-lg font-black text-slate-950">
               P
             </span>
           )}
           <span className="leading-tight">
-            <span className="block text-[15px] font-extrabold tracking-tight text-slate-900">
+            <span className="block text-[15px] font-extrabold tracking-tight text-white">
               {settings.businessName}
             </span>
-            <span className="hidden text-[11px] text-slate-500 sm:block">Apparel for Bangladesh</span>
+            <span className="hidden text-[9px] font-bold tracking-[.16em] text-slate-400 sm:block">STUDIO</span>
           </span>
         </Link>
-        <nav className="ml-4 hidden items-center gap-5 text-sm font-medium text-slate-700 md:flex">
-          <Link href="/" className="hover:text-slate-950">Home</Link>
-          <Link href="/shop" className="hover:text-slate-950">Shop</Link>
-          <Link href="/categories" className="hover:text-slate-950">Categories</Link>
-          <Link href="/track" className="hover:text-slate-950">Track Order</Link>
-          <Link href="/contact" className="hover:text-slate-950">Contact</Link>
+        <nav className="ml-4 hidden items-center gap-4 text-[11px] font-bold text-slate-300 md:flex">
+          <Link href="/" className="hover:text-lime-300">Home</Link><Link href="/jerseys" className="hover:text-lime-300">Jerseys</Link><Link href="/category/shirt" className="hover:text-lime-300">Shirts</Link><Link href="/category/t-shirt" className="hover:text-lime-300">T-Shirts</Link><Link href="/category/hoodie" className="hover:text-lime-300">Hoodies</Link><Link href="/category/drop-shoulder" className="hover:text-lime-300">Drop Shoulder</Link><Link href="/category/high-neck" className="hover:text-lime-300">High Neck</Link>
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/search"
-            className="rounded-md border border-slate-200 p-2 text-slate-700 hover:bg-slate-50"
+            className="rounded-md p-2 text-white hover:bg-white/10"
             aria-label="Search"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
           </Link>
           <Link
             href="/cart"
-            className="relative rounded-md bg-slate-900 p-2.5 text-white hover:bg-slate-800"
+            className="relative rounded-md border border-white/20 bg-white/5 p-2.5 text-white hover:bg-white/15"
             aria-label="Cart"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             {(cartCount ?? 0) > 0 ? (
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1 text-[11px] font-bold text-slate-900">
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-lime-300 px-1 text-[11px] font-bold text-slate-950">
                 {cartCount}
               </span>
             ) : null}
           </Link>
-          <Link href="/shop" className="hidden rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 hover:bg-amber-300 sm:block">
+          <Link href="/shop" className="hidden rounded-md bg-lime-300 px-4 py-2 text-sm font-black text-slate-950 hover:bg-lime-200 sm:block">
             Shop Now
           </Link>
         </div>
       </div>
-      <nav className="flex items-center gap-4 overflow-x-auto border-t border-slate-100 px-4 py-2 text-[13px] font-medium text-slate-600 md:hidden">
+      <nav className="flex items-center gap-4 overflow-x-auto border-t border-white/10 px-4 py-2 text-[13px] font-medium text-slate-300 md:hidden">
         <Link href="/">Home</Link>
         <Link href="/shop">Shop</Link>
         <Link href="/categories">Categories</Link>
@@ -138,26 +134,26 @@ export function ProductCard({ p }: { p: { name: string; slug: string; thumbnail?
   const price = dp && dp > 0 ? dp : sp;
   const img = p.thumbnail || p.images?.[0] || "";
   return (
-    <Link href={`/product/${p.slug}`} className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-slate-100 p-2">
+    <Link href={`/product/${p.slug}`} className="premium-product-card group overflow-hidden rounded-xl border border-white/10 bg-[#111516] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-lime-300/60 hover:shadow-xl">
+      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-[#1a1f20] p-2">
         {img ? (
           <SafeImage src={img} alt={p.name} className="h-full w-full bg-slate-100 object-contain object-center p-1 transition group-hover:scale-105" fallback="Image unavailable" />
         ) : (
-          <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500">Product image unavailable</div>
+            <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500">Product image unavailable</div>
         )}
         <div className="absolute left-2 top-2 flex gap-1">
-          {p.isNewArrival ? <span className="bg-emerald-700 px-2 py-1 text-[10px] font-bold tracking-wide text-white">NEW</span> : null}
-          {p.isBestSeller ? <span className="bg-amber-300 px-2 py-1 text-[10px] font-bold tracking-wide text-slate-950">BEST SELLER</span> : null}
+          {p.isNewArrival ? <span className="bg-lime-300 px-2 py-1 text-[10px] font-black tracking-wide text-slate-950">NEW</span> : null}
+          {p.isBestSeller ? <span className="bg-amber-300 px-2 py-1 text-[10px] font-black tracking-wide text-slate-950">BEST SELLER</span> : null}
           {dp && dp > 0 && dp < sp ? <span className="bg-rose-700 px-2 py-1 text-[10px] font-bold tracking-wide text-white">SAVE {Math.round((1 - dp / sp) * 100)}%</span> : null}
         </div>
       </div>
       <div className="p-3.5">
-        <div className="line-clamp-2 min-h-10 text-sm font-semibold text-slate-900">{p.name}</div>
+        <div className="line-clamp-2 min-h-10 text-sm font-semibold text-white">{p.name}</div>
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-[15px] font-extrabold text-slate-900">BDT {price.toLocaleString("en-IN")}</span>
+          <span className="text-[15px] font-extrabold text-lime-300">BDT {price.toLocaleString("en-IN")}</span>
           {dp && dp > 0 && dp < sp ? <span className="text-xs text-slate-400 line-through">BDT {sp.toLocaleString("en-IN")}</span> : null}
         </div>
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-500">
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-white/10 pt-3 text-[11px] font-bold text-slate-400">
           <span>S · M · L · XL</span><span className="text-slate-900 group-hover:underline">View details →</span>
         </div>
       </div>
