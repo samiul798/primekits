@@ -47,28 +47,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   if (path === "/admin/login") return <>{children}</>;
 
   return (
-    <div className="admin-shell min-h-screen bg-[#090d0d] text-slate-100">
-      <header className="sticky top-0 z-40 border-b border-lime-300/50 bg-[#0d1111] text-white">
+    <div className="admin-shell min-h-screen bg-[#f2f5f1] text-slate-950">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white text-slate-950 shadow-sm">
         <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3 sm:px-6">
-          <button onClick={() => setOpen((value) => !value)} className="border border-white/30 px-3 py-2 text-xs font-bold md:hidden" aria-label="Toggle navigation">Menu</button>
-          <Link href="/admin" className="font-black tracking-tight">PrimeKits <span className="text-amber-300">Operations</span></Link>
-          <span className="hidden border-l border-white/20 pl-3 text-xs text-slate-300 sm:block">Bangladesh commerce desk</span>
+          <button onClick={() => setOpen((value) => !value)} className="border border-slate-300 px-3 py-2 text-xs font-bold md:hidden" aria-label="Toggle navigation">Menu</button>
+          <Link href="/admin" className="font-black tracking-tight">PrimeKits <span className="text-lime-700">Operations</span></Link>
+          <span className="hidden border-l border-slate-200 pl-3 text-xs text-slate-500 sm:block">Bangladesh commerce desk</span>
           <div className="ml-auto flex items-center gap-2 text-sm">
-            <Link href="/" target="_blank" className="hidden border border-sky-300 bg-sky-500/20 px-3 py-2 text-xs font-bold text-sky-100 hover:bg-sky-500/30 sm:block">View storefront</Link>
+            <Link href="/" target="_blank" className="hidden border border-lime-600 bg-lime-50 px-3 py-2 text-xs font-bold text-lime-800 hover:bg-lime-100 sm:block">View storefront</Link>
             <AdminPdfButton />
-            <span className="hidden border-l border-white/20 pl-3 text-xs text-slate-300 lg:block">{admin?.name || "Loading account"}</span>
+            <span className="hidden border-l border-slate-200 pl-3 text-xs text-slate-500 lg:block">{admin?.name || "Loading account"}</span>
             <button onClick={logout} className="border border-rose-400 bg-rose-700 px-3 py-2 text-xs font-bold hover:bg-rose-600">Sign out</button>
           </div>
         </div>
       </header>
       <div className="mx-auto flex max-w-[1440px] gap-5 px-4 py-5 sm:px-6">
         <aside className={`${open ? "block" : "hidden"} w-60 shrink-0 md:block`}>
-          <nav className="sticky top-20 border border-white/10 bg-[#111716] p-2 shadow-sm">
-            <p className="border-b border-white/10 px-3 pb-3 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
+          <nav className="sticky top-20 border border-slate-200 bg-white p-2 shadow-sm">
+            <p className="border-b border-slate-100 px-3 pb-3 pt-1 text-[10px] font-bold tracking-[.16em] text-slate-400">MANAGEMENT</p>
             <div className="space-y-0.5">
               {NAV.map((item, index) => {
                 const active = path === item.href || (item.href !== "/admin" && path.startsWith(item.href));
-                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-lime-300 bg-lime-300/15 text-lime-300" : "border-transparent text-slate-400 hover:bg-white/5 hover:text-white"}`}><span className={`flex h-6 w-6 items-center justify-center rounded text-[9px] font-black ${active ? "bg-lime-300 text-slate-950" : NAV_TONES[index % NAV_TONES.length]}`}>{item.code}</span>{item.label}</Link>;
+                return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm font-bold ${active ? "border-lime-600 bg-lime-50 text-lime-900" : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"}`}><span className={`flex h-6 w-6 items-center justify-center rounded text-[9px] font-black ${active ? "bg-lime-600 text-white" : NAV_TONES[index % NAV_TONES.length]}`}>{item.code}</span>{item.label}</Link>;
               })}
             </div>
           </nav>

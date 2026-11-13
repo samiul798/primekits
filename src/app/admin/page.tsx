@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid } from "recharts";
 import { PageSkeleton } from "@/components/skeleton";
 
 type Dash = {
@@ -13,7 +13,7 @@ type Dash = {
   lowStock: { sku: string; label?: string | null; stock: number; reserved: number; available: number }[];
 };
 
-const COLORS = ["#102238", "#c58b19", "#0f766e", "#b91c1c", "#475569", "#0369a1"];
+const COLORS = ["#65a30d", "#0284c7", "#7c3aed", "#e11d48", "#f59e0b", "#0f766e", "#ea580c", "#475569"];
 const KPI_TONES = [
   "border-t-4 border-t-sky-500 bg-sky-50",
   "border-t-4 border-t-amber-500 bg-amber-50",
@@ -68,8 +68,8 @@ export default function AdminDashboard() {
     ["Average order value", formatMoney(k.averageOrderValue)], ["Active orders", k.activeOrders ?? 0], ["Net profit", formatMoney(k.netProfit)], ["Pending WhatsApp", k.pendingWhatsapp ?? 0],
   ];
 
-  return <div className="space-y-5">
-    <div className="border-b border-slate-300 pb-5 sm:flex sm:items-end sm:justify-between">
+  return <div className="admin-overview space-y-4">
+    <div className="border-b border-slate-200 pb-4 sm:flex sm:items-end sm:justify-between">
       <div><p className="text-[11px] font-bold tracking-[.16em] text-sky-700">OPERATIONS OVERVIEW</p><h1 className="mt-1 text-2xl font-black tracking-tight">Store dashboard</h1><p className="mt-1 text-sm text-slate-600">Live figures from the connected store database.</p></div>
       <div className="mt-4 flex flex-wrap gap-2 sm:mt-0">
         {[7, 30, 90].map((range) => <button key={range} onClick={() => { setDays(range); load(range); }} className={`border px-3 py-2 text-xs font-bold ${days === range ? "border-sky-800 bg-sky-800 text-white" : "border-slate-300 bg-white text-slate-700"}`}>{range} days</button>)}
@@ -78,11 +78,11 @@ export default function AdminDashboard() {
     </div>
     {error ? <div className="border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{error}</div> : null}
 
-    <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">{cards.map(([label, value], index) => <div key={label} className={`border border-slate-200 p-4 shadow-sm ${KPI_TONES[index]}`}><p className="text-xs font-bold uppercase tracking-wide text-slate-600">{label}</p><p className="mt-2 text-xl font-black tracking-tight text-slate-950">{value}</p></div>)}</section>
+    <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">{cards.map(([label, value], index) => <div key={label} className={`rounded-xl border border-slate-200 p-3 shadow-sm ${KPI_TONES[index]}`}><p className="text-[10px] font-bold uppercase tracking-wide text-slate-600">{label}</p><p className="mt-1 text-lg font-black tracking-tight text-slate-950 sm:text-xl">{value}</p></div>)}</section>
 
     <section className="grid gap-5 xl:grid-cols-2">
-      <div className="border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><h2 className="font-black">Daily revenue</h2><span className="text-xs text-slate-500">BDT</span></div><div className="mt-4 h-64"><ResponsiveContainer width="100%" height="100%"><BarChart data={data?.daily || []}><XAxis dataKey="date" tick={{ fontSize: 10 }} interval={Math.max(0, Math.floor((data?.daily.length || 1) / 8))} /><YAxis tick={{ fontSize: 10 }} /><Tooltip formatter={(value) => formatMoney(Number(value))} /><Bar dataKey="revenue" fill="#102238" radius={0} /></BarChart></ResponsiveContainer></div></div>
-      <div className="border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-black">Orders by status</h2><div className="mt-4 grid items-center gap-4 sm:grid-cols-[1fr_auto]"><div className="h-56"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={data?.byStatus || []} dataKey="count" nameKey="status" outerRadius={80}>{(data?.byStatus || []).map((_, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /></PieChart></ResponsiveContainer></div><div className="space-y-2 text-xs">{(data?.byStatus || []).map((item, index) => <div key={item.status} className="flex items-center gap-2"><span className="h-2.5 w-2.5" style={{ background: COLORS[index % COLORS.length] }} /><span className="font-bold text-slate-700">{item.status}</span><span className="ml-auto text-slate-500">{item.count}</span></div>)}</div></div></div>
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-center justify-between"><h2 className="font-black">Daily revenue</h2><span className="text-xs text-slate-500">BDT</span></div><div className="mt-3 h-52"><ResponsiveContainer width="100%" height="100%"><BarChart data={data?.daily || []} margin={{ top: 6, right: 4, left: -16, bottom: 0 }}><CartesianGrid vertical={false} stroke="#e2e8f0" /><XAxis dataKey="date" tick={{ fontSize: 10, fill: "#64748b" }} interval={Math.max(0, Math.floor((data?.daily.length || 1) / 6))} /><YAxis tick={{ fontSize: 10, fill: "#64748b" }} /><Tooltip formatter={(value) => formatMoney(Number(value))} /><Bar dataKey="revenue" fill="#65a30d" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer></div></div>
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><h2 className="font-black">Orders by status</h2><div className="mt-2 grid items-center gap-2 sm:grid-cols-[180px_1fr]"><div className="h-48"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={data?.byStatus || []} dataKey="count" nameKey="status" innerRadius={46} outerRadius={76} paddingAngle={3}>{(data?.byStatus || []).map((_, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /></PieChart></ResponsiveContainer></div><div className="grid grid-cols-2 gap-x-3 gap-y-2 text-xs">{(data?.byStatus || []).map((item, index) => <div key={item.status} className="flex min-w-0 items-center gap-2"><span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: COLORS[index % COLORS.length] }} /><span className="truncate font-bold text-slate-700">{item.status}</span><span className="ml-auto text-slate-500">{item.count}</span></div>)}</div></div></div>
     </section>
 
     <section className="grid gap-5 xl:grid-cols-2">
@@ -92,5 +92,5 @@ export default function AdminDashboard() {
   </div>;
 }
 
-function ListPanel({ title, action, href, children }: { title: string; action: string; href: string; children: React.ReactNode }) { return <div className="border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between border-b-2 border-sky-100 pb-3"><h2 className="font-black">{title}</h2><Link href={href} className="text-xs font-bold text-sky-800 underline underline-offset-4">{action}</Link></div>{children}</div>; }
+function ListPanel({ title, action, href, children }: { title: string; action: string; href: string; children: React.ReactNode }) { return <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"><div className="flex items-center justify-between border-b-2 border-lime-100 pb-2"><h2 className="font-black">{title}</h2><Link href={href} className="text-xs font-bold text-lime-800 underline underline-offset-4">{action}</Link></div><div className="max-h-64 overflow-y-auto pr-1">{children}</div></div>; }
 function EmptyState({ text }: { text: string }) { return <p className="py-8 text-center text-sm text-slate-500">{text}</p>; }
