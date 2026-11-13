@@ -115,5 +115,8 @@ export async function GET(req: NextRequest) {
     availableStock: stockMap.get(p.id) ?? 0,
   }));
 
-  return NextResponse.json({ products: data, total, page, limit, totalPages: Math.ceil(total / limit) });
+  return NextResponse.json(
+    { products: data, total, page, limit, totalPages: Math.ceil(total / limit) },
+    { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } }
+  );
 }

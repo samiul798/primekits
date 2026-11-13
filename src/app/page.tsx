@@ -5,16 +5,21 @@ import { categories, products } from "@/db/schema";
 import { getSettings } from "@/lib/settings";
 import { ProductCard, SiteFooter, SiteHeader } from "@/components/store";
 import { SafeImage } from "@/components/safe-image";
+import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
+
+const getHomeCatalog = unstable_cache(async () => {
+  return Promise.all([
+    db.select().from(products).where(eq(products.status, "published")).orderBy(desc(products.createdAt)).limit(40),
+    db.select().from(categories).where(eq(categories.isActive, true)).orderBy(categories.sortOrder).limit(12),
+  ]);
+}, ["primekits-home-catalog"], { revalidate: 60 });
 
 export default async function HomePage() {
   const settings = await getSettings();
   let all: (typeof products.$inferSelect)[] = []; let cats: (typeof categories.$inferSelect)[] = [];
-  try { [all, cats] = await Promise.all([
-    db.select().from(products).where(eq(products.status, "published")).orderBy(desc(products.createdAt)).limit(40),
-    db.select().from(categories).where(eq(categories.isActive, true)).orderBy(categories.sortOrder).limit(12),
-  ]); } catch { /* The storefront remains available during database setup. */ }
+  try { [all, cats] = await getHomeCatalog(); } catch { /* The storefront remains available during database setup. */ }
   const featured = all.filter((p) => p.isFeatured).slice(0, 4); const best = all.filter((p) => p.isBestSeller).slice(0, 8);
   const fresh = all.filter((p) => p.isNewArrival).slice(0, 4); const catalog = (best.length ? best : featured.length ? featured : all).slice(0, 8); const heroProducts = (featured.length ? featured : all).slice(0, 2);
   return <div className="storefront min-h-screen bg-[#f7f7f5] text-slate-950"><SiteHeader settings={settings as never} /><main>
