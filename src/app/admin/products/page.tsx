@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ImageUploadButton } from "@/components/admin-image-upload";
 import { SafeImage } from "@/components/safe-image";
-import { PRODUCT_SIZES, sortProductSizes } from "@/lib/utils";
+import { orderProductsByPreference, PRODUCT_SIZES, sortProductSizes } from "@/lib/utils";
 
 type Product = {
   id: string;
@@ -62,13 +62,35 @@ export default function AdminProducts() {
   const [vform, setVform] = useState({ size: "M", sku: "", sellingPrice: "", discountPrice: "", purchaseCost: "0", stockQty: "20", image: "" });
   const [stockAdj, setStockAdj] = useState({ variantId: "", type: "purchase", quantity: "10", reason: "", direction: "add", unitCost: "" });
   const [stockSaving, setStockSaving] = useState(false);
+  const [orderSaving, setOrderSaving] = useState(false);
 
   async function load() {
     const r = await fetch(`/api/admin/products?q=${encodeURIComponent(q)}`);
     const d = await r.json();
-    if (r.ok) setItems(d.products || []);
+    const ordering = await fetch("/api/admin/product-order").then((x) => x.ok ? x.json() : ({ order: [] })).catch(() => ({ order: [] }));
+    if (r.ok) setItems(orderProductsByPreference(d.products || [], ordering.order));
     const c = await fetch("/api/admin/categories").then((x) => x.json()).catch(() => ({ categories: [] }));
     setCats(c.categories || []);
+  }
+
+  async function moveProduct(id: string, target: "first" | "up" | "down" | "last") {
+    if (q.trim() || orderSaving) return;
+    const from = items.findIndex((item) => item.id === id);
+    if (from < 0) return;
+    const to = target === "first" ? 0 : target === "last" ? items.length - 1 : target === "up" ? from - 1 : from + 1;
+    if (to < 0 || to >= items.length || to === from) return;
+    const next = [...items];
+    const [moving] = next.splice(from, 1);
+    next.splice(to, 0, moving);
+    setItems(next);
+    setOrderSaving(true);
+    try {
+      const response = await fetch("/api/admin/product-order", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ order: next.map((item) => item.id) }) });
+      if (!response.ok) throw new Error("Could not save product order");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Could not save product order");
+      void load();
+    } finally { setOrderSaving(false); }
   }
 
   useEffect(() => {
@@ -225,7 +247,8 @@ export default function AdminProducts() {
         <button onClick={load} className="rounded-xl border bg-white px-4 font-bold">Search</button>
       </div>
       <div className="grid gap-2">
-        {items.map((p) => (
+        {!q.trim() ? <p className="text-xs text-slate-500">Display order: use First, Up, Down, or Last. This order controls the homepage and shop catalog.</p> : null}
+        {items.map((p, index) => (
           <div key={p.id} className="flex items-center gap-3 rounded-2xl border bg-white p-3">
             {p.thumbnail ? (
               <SafeImage src={p.thumbnail} alt={`${p.name} thumbnail`} className="h-12 w-12 rounded-xl bg-slate-100 object-cover" fallback="Image unavailable" />
@@ -237,6 +260,7 @@ export default function AdminProducts() {
               <div className="text-xs text-slate-500">{p.sku} • {p.status} • {p.variantCount} variants • <b className={p.availableStock <= 5 ? "text-rose-600" : ""}>{p.availableStock} pcs</b> • ৳{p.sellingPrice}</div>
             </div>
             <div className="flex flex-wrap gap-1">
+              {!q.trim() ? <><button disabled={orderSaving || index === 0} onClick={() => void moveProduct(p.id, "first")} className="rounded-full border px-2 py-1 text-xs font-bold disabled:opacity-35">First</button><button disabled={orderSaving || index === 0} onClick={() => void moveProduct(p.id, "up")} className="rounded-full border px-2 py-1 text-xs font-bold disabled:opacity-35">Up</button><button disabled={orderSaving || index === items.length - 1} onClick={() => void moveProduct(p.id, "down")} className="rounded-full border px-2 py-1 text-xs font-bold disabled:opacity-35">Down</button><button disabled={orderSaving || index === items.length - 1} onClick={() => void moveProduct(p.id, "last")} className="rounded-full border px-2 py-1 text-xs font-bold disabled:opacity-35">Last</button></> : null}
               <button onClick={() => openEdit(p)} className="rounded-full border px-3 py-1 text-xs font-bold">Edit</button>
               <button onClick={() => openVariants(p)} className="rounded-full border px-3 py-1 text-xs font-bold">Variants</button>
               <button onClick={() => remove(p.id)} className="rounded-full border border-rose-200 px-3 py-1 text-xs font-bold text-rose-600">Del</button>

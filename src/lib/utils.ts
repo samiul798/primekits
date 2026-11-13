@@ -59,6 +59,17 @@ export function sortProductSizes(values: readonly (string | null | undefined)[])
     .sort((a, b) => (rank.get(a.toLowerCase()) ?? PRODUCT_SIZES.length) - (rank.get(b.toLowerCase()) ?? PRODUCT_SIZES.length));
 }
 
+export function orderProductsByPreference<T extends { id: string }>(rows: T[], preferredIds?: readonly string[] | null): T[] {
+  if (!preferredIds?.length) return rows;
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  const ordered = preferredIds.flatMap((id) => {
+    const row = byId.get(id);
+    return row ? [row] : [];
+  });
+  const known = new Set(ordered.map((row) => row.id));
+  return [...ordered, ...rows.filter((row) => !known.has(row.id))];
+}
+
 export const DIVISIONS = [
   "Dhaka",
   "Chattogram",

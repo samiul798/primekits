@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { products, productVariants, categories } from "@/db/schema";
 import { eq, and, ilike, or, sql, desc, asc, inArray } from "drizzle-orm";
+import { getSettings } from "@/lib/settings";
+import { orderProductsByPreference } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -81,6 +83,8 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  const storeSettings = await getSettings();
+  rows = orderProductsByPreference(rows, storeSettings.productDisplayOrder);
   const total = rows.length;
   const paged = rows.slice(offset, offset + limit);
 

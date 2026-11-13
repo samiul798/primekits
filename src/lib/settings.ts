@@ -26,6 +26,7 @@ export type BusinessSettings = {
   announcement: string;
   sizeChartImage: string;
   sizeChartNote: string;
+  productDisplayOrder: string[];
 };
 
 export const DEFAULT_SETTINGS: BusinessSettings = {
@@ -51,6 +52,7 @@ export const DEFAULT_SETTINGS: BusinessSettings = {
   announcement: "Cash on Delivery available all over Bangladesh",
   sizeChartImage: "/images/primekits-size-chart.svg",
   sizeChartNote: "Measure a shirt that fits you well, then compare it with the chart before ordering.",
+  productDisplayOrder: [],
 };
 
 const loadSettings = unstable_cache(async (): Promise<BusinessSettings> => {
