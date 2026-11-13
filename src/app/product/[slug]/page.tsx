@@ -313,18 +313,6 @@ export default function ProductPage() {
                   </button>
                 ))}
               </div>
-            ) : (
-              <div className="product-choices mt-6 border border-slate-200 bg-white p-5">
-                <div className="flex items-center justify-between gap-2"><div className="text-sm font-extrabold">Size: {size || <span className="text-rose-600">Select size</span>}</div><button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-800">Size chart</button></div>
-                <div className="mt-3 flex flex-wrap gap-2">{PRODUCT_SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={`min-w-14 border px-4 py-2.5 text-sm font-extrabold ${size === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-900"}`}>{s}</button>)}</div>
-                <p className="mt-3 text-[11px] leading-5 text-slate-500">Choose your usual size. This product uses the standard PrimeKits size guide; exact size-level stock is not configured yet.</p>
-              </div>
-            )}
-            {!sizes.length ? (
-              <div className="mt-4 flex items-center justify-between border border-slate-200 bg-slate-50 p-4">
-                <div><div className="text-sm font-extrabold">Size guide</div><div className="text-xs text-slate-500">See the measurement table before ordering.</div></div>
-                <button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-900 bg-slate-900 px-3 py-2 text-xs font-extrabold text-white">Size chart</button>
-              </div>
             ) : null}
           </div>
           <div className="product-info">
@@ -373,7 +361,8 @@ export default function ProductPage() {
                               : "border-slate-200 bg-white hover:border-slate-900"
                         }`}
                       >
-                        {s}
+                        <span className="block">{s}</span>
+                        <span className={`mt-1 block text-[9px] leading-none ${isSel ? "text-white/80" : soldOut ? "text-rose-600" : "text-emerald-700"}`}>{soldOut ? "Out" : `${sizeAvail} left`}</span>
                         <span
                           className={`absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white ${
                             soldOut ? "bg-rose-500" : sizeAvail <= 5 ? "bg-amber-400" : "bg-emerald-500"
@@ -383,23 +372,20 @@ export default function ProductPage() {
                     );
                   })}
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
-                  <span>
-                    <span className="mr-2">In stock</span>
-                    <span className="mr-2">Low stock</span>
-                    <span>Out of stock</span>
-                  </span>
-                  <button type="button" onClick={() => setShowSizeChart(true)} className="font-bold text-slate-700 underline">
-                    Confused? See size chart with image
-                  </button>
-                </div>
+                <div className="mt-2 text-[11px] text-slate-500">Each size shows its live available quantity. “Out” sizes cannot be selected.</div>
                 {size ? (
                   <SelectedSizeHint size={size} categorySlug={category?.slug} />
                 ) : (
                   <p className="mt-2 text-[11px] leading-5 text-slate-500">Compare a shirt that fits you well with the size chart before selecting.</p>
                 )}
               </div>
-            ) : null}
+            ) : (
+              <div className="product-choices mt-6 border border-slate-200 bg-white p-5">
+                <div className="flex items-center justify-between gap-2"><div className="text-sm font-extrabold">Size: {size || <span className="text-rose-600">Select size</span>}</div><button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-800">Size chart</button></div>
+                <div className="mt-3 flex flex-wrap gap-2">{PRODUCT_SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={`min-w-14 border px-4 py-2.5 text-sm font-extrabold ${size === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-900"}`}>{s}</button>)}</div>
+                <p className="mt-3 text-[11px] leading-5 text-slate-500">Choose your usual size and check the size chart before ordering. Size-level inventory has not yet been configured for this product.</p>
+              </div>
+            )}
 
             <div className="mt-4 border-l-4 border-slate-300 bg-slate-50 px-4 py-3 text-sm">
               {hasVariants ? (
@@ -412,9 +398,7 @@ export default function ProductPage() {
                 ) : (
                   <span className="text-slate-500">Select variations to see availability</span>
                 )
-              ) : (
-                <span className="font-bold text-emerald-600">In stock</span>
-              )}
+              ) : <span className="font-bold text-amber-700">Select a size to continue. Exact size stock is not configured for this product.</span>}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
