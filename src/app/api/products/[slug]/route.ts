@@ -19,39 +19,17 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ slug: stri
   if (!p || p.status !== "published") {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
-  // views++
-  try {
-    await db.update(products).set({ views: (p.views ?? 0) + 1 }).where(eq(products.id, p.id));
-  } catch {}
+  // Analytics must never block the product's customer-facing response.
+  void db.update(products).set({ views: (p.views ?? 0) + 1 }).where(eq(products.id, p.id)).catch(() => {});
 
-  const variants = await db
-    .select()
-    .from(productVariants)
-    .where(and(eq(productVariants.productId, p.id), eq(productVariants.isActive, true)));
-
-  const revs = await db
-    .select()
-    .from(reviews)
-    .where(and(eq(reviews.productId, p.id), eq(reviews.isApproved, true)))
-    .orderBy(desc(reviews.createdAt))
-    .limit(20);
-
-  let category = null;
-  if (p.categoryId) {
-    const c = await db.select().from(categories).where(eq(categories.id, p.categoryId)).limit(1);
-    category = c[0] ?? null;
-  }
-
-  // related
-  let related: typeof p[] = [];
-  if (p.categoryId) {
-    related = await db
-      .select()
-      .from(products)
-      .where(and(eq(products.status, "published"), eq(products.categoryId, p.categoryId)))
-      .limit(9);
-    related = related.filter((r) => r.id !== p.id).slice(0, 8);
-  }
+  const [variants, revs, categoryRows, relatedRows] = await Promise.all([
+    db.select().from(productVariants).where(and(eq(productVariants.productId, p.id), eq(productVariants.isActive, true))),
+    db.select().from(reviews).where(and(eq(reviews.productId, p.id), eq(reviews.isApproved, true))).orderBy(desc(reviews.createdAt)).limit(20),
+    p.categoryId ? db.select().from(categories).where(eq(categories.id, p.categoryId)).limit(1) : Promise.resolve([]),
+    p.categoryId ? db.select().from(products).where(and(eq(products.status, "published"), eq(products.categoryId, p.categoryId))).limit(9) : Promise.resolve([]),
+  ]);
+  const category = categoryRows[0] ?? null;
+  const related = relatedRows.filter((row) => row.id !== p.id).slice(0, 8);
 
   return NextResponse.json({
     product: publicProduct(p),

@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { settings } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
 export type BusinessSettings = {
   businessName: string;
@@ -48,11 +49,11 @@ export const DEFAULT_SETTINGS: BusinessSettings = {
   riskSuccessMedium: 50,
   riskRejectHigh: 40,
   announcement: "Cash on Delivery available all over Bangladesh",
-  sizeChartImage: "/images/size-guide.svg",
+  sizeChartImage: "/images/primekits-size-chart.svg",
   sizeChartNote: "Measure a shirt that fits you well, then compare it with the chart before ordering.",
 };
 
-export async function getSettings(): Promise<BusinessSettings> {
+const loadSettings = unstable_cache(async (): Promise<BusinessSettings> => {
   try {
     const rows = await db.select().from(settings);
     const merged: Record<string, unknown> = { ...DEFAULT_SETTINGS };
@@ -63,6 +64,10 @@ export async function getSettings(): Promise<BusinessSettings> {
   } catch {
     return DEFAULT_SETTINGS;
   }
+}, ["primekits-store-settings"], { revalidate: 60 });
+
+export async function getSettings(): Promise<BusinessSettings> {
+  return loadSettings();
 }
 
 export async function saveSetting(key: string, value: unknown) {

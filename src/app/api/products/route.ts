@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { products, productVariants, categories } from "@/db/schema";
-import { eq, and, ilike, or, sql, desc, asc } from "drizzle-orm";
+import { eq, and, ilike, or, sql, desc, asc, inArray } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -85,7 +85,12 @@ export async function GET(req: NextRequest) {
   const paged = rows.slice(offset, offset + limit);
 
   // attach available stock summary
-  const allVariants = await db.select().from(productVariants);
+  // The old implementation read every variant for every catalog request.
+  // Fetch only variants belonging to the page of products we are returning.
+  const pagedIds = paged.map((product) => product.id);
+  const allVariants = pagedIds.length
+    ? await db.select().from(productVariants).where(inArray(productVariants.productId, pagedIds))
+    : [];
   const stockMap = new Map<string, number>();
   for (const v of allVariants) {
     const avail = Math.max(0, (v.stockQty ?? 0) - (v.reservedQty ?? 0));

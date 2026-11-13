@@ -12,7 +12,16 @@ export async function GET(req: NextRequest) {
   const days = Number.isInteger(requestedDays) && requestedDays > 0 && requestedDays <= 3650 ? requestedDays : 30;
   const since = new Date(Date.now() - days * 24 * 3600 * 1000);
 
-  const allOrders = await db.select().from(orders).orderBy(desc(orders.createdAt)).limit(2000);
+  // These datasets are independent. Run them concurrently so an admin visit is
+  // bounded by the slowest database call rather than their combined latency.
+  const [allOrders, items, allExp, allVariants, totalCustomers, prodCount] = await Promise.all([
+    db.select().from(orders).orderBy(desc(orders.createdAt)).limit(2000),
+    db.select().from(orderItems).limit(5000),
+    db.select().from(expenses).limit(1000),
+    db.select().from(productVariants).limit(5000),
+    db.select({ c: sql<number>`count(*)` }).from(customers),
+    db.select({ c: sql<number>`count(*)` }).from(products),
+  ]);
   const inRange = allOrders.filter((o) => new Date(o.createdAt) >= since);
 
   const count = (s: string) => inRange.filter((o) => o.status === s).length;
@@ -20,7 +29,6 @@ export async function GET(req: NextRequest) {
   // Sales are recognized when delivery is completed, not when the customer
   // placed the order. This keeps today's profit correct for older orders.
   const delivered = allOrders.filter((o) => o.status === "delivered" && new Date(o.courierDeliveredAt || o.updatedAt || o.createdAt) >= since);
-  const items = await db.select().from(orderItems).limit(5000);
   const itemsInRange = items.filter((i) =>
     delivered.some((d) => d.id === i.orderId)
   );
@@ -37,15 +45,12 @@ export async function GET(req: NextRequest) {
   const deliveryCollected = delivered.reduce((s, o) => s + Number(o.deliveryCharge || 0), 0);
   const grossProfit = revenue - cogs;
 
-  const allExp = await db.select().from(expenses).limit(1000);
   const expInRange = allExp.filter((e) => new Date(e.expenseDate) >= since);
   const totalExpenses = expInRange.reduce((s, e) => s + Number(e.amount || 0), 0);
 
-  const allVariants = await db.select().from(productVariants).limit(5000);
   const lowStock = allVariants.filter((v) => (v.stockQty ?? 0) - (v.reservedQty ?? 0) <= (v.lowStockThreshold ?? 5));
   const outOfStock = allVariants.filter((v) => (v.stockQty ?? 0) - (v.reservedQty ?? 0) <= 0);
 
-  const totalCustomers = await db.select({ c: sql<number>`count(*)` }).from(customers);
 
   // daily sales
   const daily = new Map<string, { date: string; revenue: number; orders: number }>();
@@ -63,7 +68,6 @@ export async function GET(req: NextRequest) {
   const byStatus = new Map<string, number>();
   for (const o of inRange) byStatus.set(o.status, (byStatus.get(o.status) ?? 0) + 1);
 
-  const prodCount = await db.select({ c: sql<number>`count(*)` }).from(products);
   const recentOrders = allOrders.slice(0, 10).map((o) => ({
     ...o,
     grandTotal: Number(o.grandTotal),
