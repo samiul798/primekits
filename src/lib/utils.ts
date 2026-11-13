@@ -48,7 +48,10 @@ export function effectivePrice(selling: number, discount?: number | string | nul
   return selling;
 }
 
-export const PRODUCT_SIZES = ["S", "M", "L", "XL"] as const;
+// Default customer-facing options for products that have not yet received
+// variant-level size inventory. Admin can add any custom size value.
+export const DEFAULT_CUSTOMER_SIZES = ["M", "L", "XL"] as const;
+export const PRODUCT_SIZES = ["S", "M", "L", "XL", "2XL", "3XL"] as const;
 
 export function sortProductSizes(values: readonly (string | null | undefined)[]): string[] {
   const rank = new Map(PRODUCT_SIZES.map((size, index) => [size.toLowerCase(), index]));

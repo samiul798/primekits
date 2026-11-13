@@ -332,7 +332,7 @@ export default function AdminProducts() {
             <div className="mt-4 rounded-2xl bg-slate-50 p-3">
               <div className="text-sm font-black">+ Add Variation</div>
               <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                <select value={vform.size} onChange={(e) => setVform({ ...vform, size: e.target.value })} className="rounded-xl border px-2 py-2 text-sm">{PRODUCT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
+                <div><input list="variant-size-options" value={vform.size} onChange={(e) => setVform({ ...vform, size: e.target.value.toUpperCase() })} placeholder="Size (e.g. M, 2XL)" className="w-full rounded-xl border px-2 py-2 text-sm" /><datalist id="variant-size-options">{PRODUCT_SIZES.map((s) => <option key={s} value={s} />)}</datalist><p className="mt-1 text-[10px] text-slate-500">Type any size, e.g. S, 2XL, 3XL</p></div>
                 <input value={vform.sku} onChange={(e) => setVform({ ...vform, sku: e.target.value })} placeholder="SKU" className="rounded-xl border px-2 py-2 text-sm" />
                 <input type="number" value={vform.sellingPrice} onChange={(e) => setVform({ ...vform, sellingPrice: e.target.value })} placeholder="Sell ৳" className="rounded-xl border px-2 py-2 text-sm" />
                 <input type="number" value={vform.discountPrice} onChange={(e) => setVform({ ...vform, discountPrice: e.target.value })} placeholder="Disc ৳" className="rounded-xl border px-2 py-2 text-sm" />

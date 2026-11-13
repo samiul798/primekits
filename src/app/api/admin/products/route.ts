@@ -6,6 +6,16 @@ import { productSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { eq, desc, ilike, or, inArray } from "drizzle-orm";
 
+async function uniqueProductSlug(raw: string) {
+  const base = slugify(raw) || "product";
+  const matches = await db.select({ slug: products.slug }).from(products).where(ilike(products.slug, `${base}%`));
+  const used = new Set(matches.map((item) => item.slug));
+  if (!used.has(base)) return base;
+  let suffix = 2;
+  while (used.has(`${base}-${suffix}`)) suffix += 1;
+  return `${base}-${suffix}`;
+}
+
 export async function GET(req: NextRequest) {
   const { response } = await requireAdmin();
   if (response) return response;
@@ -32,7 +42,9 @@ export async function POST(req: NextRequest) {
   const p = productSchema.safeParse(body);
   if (!p.success) return NextResponse.json({ error: "Validation failed", issues: p.error.issues }, { status: 400 });
   const d = p.data;
-  const slug = d.slug ? slugify(d.slug) : slugify(d.name);
+  // Names are intentionally not unique. Every duplicate name receives a
+  // unique URL slug while SKU remains the inventory-level unique identifier.
+  const slug = await uniqueProductSlug(d.slug ? slugify(d.slug) : d.name);
   try {
     const ins = await db
       .insert(products)

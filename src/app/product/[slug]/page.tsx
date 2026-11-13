@@ -7,7 +7,7 @@ import { SiteHeader, SiteFooter, ProductCard } from "@/components/store";
 import { useCart } from "@/components/CartProvider";
 import { getSizeChart, DEFAULT_SIZE_GUIDE_IMAGE } from "@/lib/size-charts";
 import { SafeImage } from "@/components/safe-image";
-import { PRODUCT_SIZES, sortProductSizes } from "@/lib/utils";
+import { DEFAULT_CUSTOMER_SIZES, sortProductSizes } from "@/lib/utils";
 
 type Variant = {
   id: string;
@@ -382,7 +382,7 @@ export default function ProductPage() {
             ) : (
               <div className="product-choices mt-6 border border-slate-200 bg-white p-5">
                 <div className="flex items-center justify-between gap-2"><div className="text-sm font-extrabold">Size: {size || <span className="text-rose-600">Select size</span>}</div><button type="button" onClick={() => setShowSizeChart(true)} className="border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-800">Size chart</button></div>
-                <div className="mt-3 flex flex-wrap gap-2">{PRODUCT_SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={`min-w-14 border px-4 py-2.5 text-sm font-extrabold ${size === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-900"}`}>{s}</button>)}</div>
+                <div className="mt-3 flex flex-wrap gap-2">{DEFAULT_CUSTOMER_SIZES.map((s) => <button key={s} type="button" onClick={() => setSize(s)} className={`min-w-14 border px-4 py-2.5 text-sm font-extrabold ${size === s ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:border-slate-900"}`}>{s}</button>)}</div>
                 <p className="mt-3 text-[11px] leading-5 text-slate-500">Choose your usual size and check the size chart before ordering. Size-level inventory has not yet been configured for this product.</p>
               </div>
             )}
