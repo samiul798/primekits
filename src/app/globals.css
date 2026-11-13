@@ -220,6 +220,31 @@ input, select, textarea {
 .admin-shell .jersey-gallery-admin button:not(:disabled):hover { border-color: #b8ff35; }
 .admin-shell .jersey-gallery-admin .border-rose-200 { border-color: rgb(251 113 133 / 40%); }
 
+/* Admin uses a dark operational frame with a high-contrast light workspace.
+   This deliberately avoids mixing dark form controls into white cards. */
+.admin-shell { background: #f2f5f1; color: #0f172a; }
+.admin-shell input, .admin-shell select, .admin-shell textarea {
+  background: #fff;
+  border-color: #cbd5d0;
+  color: #0f172a;
+}
+.admin-shell input::placeholder, .admin-shell textarea::placeholder { color: #64748b; opacity: 1; }
+.admin-shell main > .rounded-2xl,
+.admin-shell main .jersey-gallery-admin .bg-white,
+.admin-shell .bg-white { background: #fff; border-color: #dbe2dc; color: #0f172a; }
+.admin-shell .text-slate-400 { color: #64748b; }
+.admin-shell .text-slate-500 { color: #475569; }
+.admin-shell .text-slate-600 { color: #334155; }
+.admin-shell .text-slate-700 { color: #1e293b; }
+.admin-shell .bg-slate-50, .admin-shell .bg-slate-100 { background: #f6f8f5; }
+.admin-shell .border { border-color: #dbe2dc; }
+.admin-shell table thead { background: #f1f5f2; }
+.admin-shell table tbody tr:nth-child(even) { background: #fafcf9; }
+.admin-shell .jersey-gallery-admin .text-emerald-700 { color: #3f6212; }
+.admin-shell .jersey-gallery-admin .bg-emerald-50 { background: #ecfccb; }
+.admin-shell .jersey-gallery-admin .border-emerald-500 { border-color: #65a30d; }
+.admin-shell .jersey-gallery-admin button:not(:disabled):hover { border-color: #65a30d; }
+
 @media (max-width: 767px) {
   .store-header nav { scrollbar-width: none; }
   .storefront h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
@@ -235,7 +260,7 @@ input, select, textarea {
     padding-top: 2px;
   }
 
-  .product-details { grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); }
+  .product-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 699px) {
