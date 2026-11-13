@@ -134,10 +134,29 @@ export const DEFAULT_SIZE_CHART: SizeChart = {
   tipBn: "দুই সাইজের মাঝে থাকলে বড় সাইজটি নিন।",
 };
 
+// The approved all-apparel chart shown in the supplied PrimeKits reference.
+// Product-specific chart images can still be managed by Admin, but the table
+// and size hint use one consistent measurement standard across the storefront.
+export const PRIMEKITS_SIZE_CHART: SizeChart = {
+  category: "primekits",
+  title: "PrimeKits Size Chart",
+  unit: "inch",
+  headers: ["Size", "Chest", "Length", "Shoulder"],
+  rows: [
+    { size: "M", chest: "38", length: "27", shoulder: "17" },
+    { size: "L", chest: "40", length: "28", shoulder: "18" },
+    { size: "XL", chest: "42", length: "29", shoulder: "19" },
+    { size: "XXL", chest: "44", length: "30", shoulder: "20" },
+  ],
+  howTo: ["Chest: measure around the fullest part of your chest.", "Length: highest shoulder point to hem.", "When between sizes, choose the larger size."],
+  tipBn: "Compare a garment that fits you well with this chart before ordering.",
+};
+
 export function getSizeChart(categorySlug?: string | null): SizeChart {
-  if (!categorySlug) return DEFAULT_SIZE_CHART;
-  const key = categorySlug.toLowerCase();
-  return SIZE_CHARTS[key] ?? DEFAULT_SIZE_CHART;
+  void categorySlug;
+  return PRIMEKITS_SIZE_CHART;
 }
 
-export const DEFAULT_SIZE_GUIDE_IMAGE = "/images/size-guide.svg";
+// The admin can still override this for a specific product/category, but every
+// unconfigured product uses the approved PrimeKits measurement chart.
+export const DEFAULT_SIZE_GUIDE_IMAGE = "/images/primekits-size-chart.svg";

@@ -430,8 +430,8 @@ export default function ProductPage() {
         </div>
 
         {/* Description */}
-        <div className="product-details mt-10 grid gap-6 md:grid-cols-3">
-          <div className="border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
+        <div className="product-details mt-10 grid gap-6 md:grid-cols-2">
+          <div className="h-full border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="font-extrabold">Product Description</h2>
             <p className="mt-2 whitespace-pre-line text-sm text-slate-600">{product.description || product.shortDescription || "Premium quality apparel from PrimeKits Studio."}</p>
             {product.features?.length ? (
@@ -440,7 +440,7 @@ export default function ProductPage() {
               </ul>
             ) : null}
           </div>
-          <div className="border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="h-full border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="font-extrabold">Specifications</h2>
             <dl className="mt-2 space-y-1.5 text-sm">
               {Object.entries(product.specifications || {}).map(([k, v]) => (

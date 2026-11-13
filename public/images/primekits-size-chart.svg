@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="250" viewBox="0 0 860 250" role="img" aria-labelledby="title desc">
+  <title id="title">PrimeKits apparel size chart</title><desc id="desc">Measurements in inches for M, L, XL and XXL.</desc>
+  <rect width="860" height="250" rx="20" fill="#f8fafc"/>
+  <rect x="1" y="1" width="858" height="248" rx="19" fill="none" stroke="#101827" stroke-width="2"/>
+  <path d="M1 20Q1 1 20 1H840Q859 1 859 20V58H1Z" fill="#101827"/>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="20" fill="#fff"><text x="28" y="38">SIZE (IN)</text><text x="194" y="38">CHEST (IN)</text><text x="398" y="38">LENGTH (IN)</text><text x="618" y="38">SHOULDER (IN)</text></g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#162033"><rect x="2" y="58" width="856" height="47" fill="#fff"/><rect x="2" y="105" width="856" height="47" fill="#f1f5f9"/><rect x="2" y="152" width="856" height="47" fill="#fff"/><rect x="2" y="199" width="856" height="49" fill="#f1f5f9"/><g font-weight="700"><text x="28" y="89">M</text><text x="28" y="136">L</text><text x="28" y="183">XL</text><text x="28" y="230">XXL</text></g><g><text x="194" y="89">38</text><text x="194" y="136">40</text><text x="194" y="183">42</text><text x="194" y="230">44</text><text x="398" y="89">27</text><text x="398" y="136">28</text><text x="398" y="183">29</text><text x="398" y="230">30</text><text x="618" y="89">17</text><text x="618" y="136">18</text><text x="618" y="183">19</text><text x="618" y="230">20</text></g></g>
+</svg>
