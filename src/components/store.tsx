@@ -32,13 +32,13 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
             </span>
           )}
           <span className="leading-tight">
-            <span className="block text-[15px] font-extrabold tracking-tight text-white">
+            <span className="block text-[18px] font-extrabold tracking-tight text-white">
               {settings.businessName}
             </span>
-            <span className="hidden text-[9px] font-bold tracking-[.16em] text-slate-400 sm:block">STUDIO</span>
+            <span className="hidden text-[10px] font-bold tracking-[.16em] text-slate-400 sm:block">STUDIO</span>
           </span>
         </Link>
-        <nav className="ml-4 hidden items-center gap-4 text-[11px] font-bold text-slate-300 md:flex">
+        <nav className="ml-5 hidden items-center gap-5 text-[13px] font-bold text-slate-300 lg:flex">
           <Link href="/" className="hover:text-lime-300">Home</Link><Link href="/jerseys" className="hover:text-lime-300">Jerseys</Link><Link href="/category/shirt" className="hover:text-lime-300">Shirts</Link><Link href="/category/t-shirt" className="hover:text-lime-300">T-Shirts</Link><Link href="/category/hoodie" className="hover:text-lime-300">Hoodies</Link><Link href="/category/drop-shoulder" className="hover:text-lime-300">Drop Shoulder</Link><Link href="/category/high-neck" className="hover:text-lime-300">High Neck</Link>
         </nav>
         <div className="ml-auto flex items-center gap-2">
@@ -66,7 +66,7 @@ export function SiteHeader({ settings, cartCount }: { settings: StoreSettings; c
           </Link>
         </div>
       </div>
-      <nav className="flex items-center gap-4 overflow-x-auto border-t border-white/10 px-4 py-2 text-[13px] font-medium text-slate-300 md:hidden">
+      <nav className="flex items-center gap-5 overflow-x-auto border-t border-white/10 px-4 py-3 text-[14px] font-bold text-slate-200 md:hidden">
         <Link href="/">Home</Link>
         <Link href="/shop">Shop</Link>
         <Link href="/categories">Categories</Link>

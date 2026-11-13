@@ -278,7 +278,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="premium-product-page min-h-screen pb-20">
       <SiteHeader settings={settings as never} />
       <div className="product-shell mx-auto max-w-7xl px-4 py-6">
         <div className="text-xs text-slate-500"><Link href="/">Home</Link> / <Link href="/shop">Shop</Link> / {product.name}</div>
